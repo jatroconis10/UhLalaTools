@@ -1,11 +1,59 @@
 <div class="row">
-  <div *ngFor="let application of applications; let i = index" class="m-2 col-3">
-    <div class="card">
+  <div *ngFor="let application of applications; let i = index" class="col-3 d-flex align-items-stretch mb-3 mt-3">
+    <div class="card shadow">
       <img class="card-img-top img-fluid" src="{{'/assets/images/application-' + (i % 9) + '.jpg'}}" alt="Application image">
       <div class="card-body">
-        <h5 class="card-title">{{application.name}}</h5>
+        <h5 class="card-title">
+          <a routerLink="/applications/{{application.id}}">{{application.name}}</a>
+        </h5>
         <p class="card-text">{{application.description}}</p>
       </div>
     </div>
   </div>
+</div>
+<div class="mb-3 mt-3">
+  <button data-toggle="modal" data-target="#applicationFormModal" class="btn btn-primary">Create application</button>
+</div>
+<div class="modal fade" id="applicationFormModal" tabindex="-1" role="dialog" aria-labelledby="applicationFormModal" aria-hidden="true">
+  <form (ngSubmit)="onSubmit()" #applicationForm="ngForm">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Create application</h5>
+          <button type="button" (click)="onCloseForm(); applicationForm.reset();" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label [class.text-danger]="name.invalid && name.touched" for="name">
+              Name
+              <span class="text-danger">
+                *
+              </span>
+            </label>
+            <input [(ngModel)]="newApplication.name" #name="ngModel" name="name" 
+                   type="text" required class="form-control" id="name"
+                   [class.is-invalid]="name.invalid && name.touched">
+            <div [hidden]="name.valid || name.untouched">
+              <small class="text-danger">
+                A name for the application is required
+              </small>
+            </div>
+          </div>
+      
+          <div class="form-group">
+            <label for="description">Description</label>
+            <textarea [(ngModel)]="newApplication.description" name="description"
+                      #description="ngModel" rows="5" class="form-control" id="description">
+            </textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button (click)="onCloseForm(); applicationForm.reset();" type="button" class="btn btn-secondary" data-dismiss="modal">Discard</button>
+          <button [disabled]="!applicationForm.form.valid" type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </div>
+    </div>
+  </form>
 </div>
