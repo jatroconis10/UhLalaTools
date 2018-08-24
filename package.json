@@ -1,0 +1,23 @@
+{
+  "name": "uhlalatools",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jatroconis10/UhLalaTools.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jatroconis10/UhLalaTools/issues"
+  },
+  "homepage": "https://github.com/jatroconis10/UhLalaTools#readme",
+  "dependencies": {
+    "mongoose": "~3.6.11",
+    "express": "^4.7.1"
+  }
+}
