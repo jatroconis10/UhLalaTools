@@ -1,0 +1,11 @@
+<div class="row">
+  <div *ngFor="let application of applications; let i = index" class="m-2 col-3">
+    <div class="card">
+      <img class="card-img-top img-fluid" src="{{'/assets/images/application-' + (i % 9) + '.jpg'}}" alt="Application image">
+      <div class="card-body">
+        <h5 class="card-title">{{application.name}}</h5>
+        <p class="card-text">{{application.description}}</p>
+      </div>
+    </div>
+  </div>
+</div>
