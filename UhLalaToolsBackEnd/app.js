@@ -6,7 +6,7 @@ var Schema = mongoose.Schema;
 
 app.use(bodyParser.json());
 
-mongoose.connect('mongodb://localhost/uhlala-api');
+mongoose.connect('mongodb://localhost:27017/uhlala-api');
 
 var mongoose = require('mongoose')
 
@@ -115,6 +115,10 @@ app.delete('/tests/:id', function(req, res) {
         });
     });
 });
+
+mongoose.connection.once('Connected', function() {
+    console.log('Database connected')
+})
 
 app.listen(3000, function() {
     console.log('Escuchando en el puerto 3000');
