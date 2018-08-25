@@ -25,6 +25,7 @@ export class ApplicationsComponent implements OnInit {
   }
 
   private getApplications() {
+    console.log(this.applicationService.getApplications)
     this.applicationService.getApplications().subscribe(
       applications => this.applications = applications
     );

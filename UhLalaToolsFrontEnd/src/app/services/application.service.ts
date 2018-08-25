@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+
 import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
@@ -9,9 +10,7 @@ import { Application } from '../models/application';
 
 import { ErrorHandlingService } from './error-handling.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class ApplicationService {
   private applicationsUrl = `${environment.apiUrl}/applications`;
   private httpOptions = {

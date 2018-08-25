@@ -4,9 +4,7 @@ import { Observable, of } from 'rxjs';
 
 import { MessageService } from './message.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class ErrorHandlingService {
 
   constructor(private messageService: MessageService) { }

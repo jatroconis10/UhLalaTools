@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
 import swal from 'sweetalert2';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class MessageService {
 
   constructor() { }
