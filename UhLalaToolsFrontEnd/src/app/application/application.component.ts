@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { Application, APPLICATIONS } from '../models/application';
+import { Application } from '../models/application';
+
+import { ApplicationService } from '../services/application.service';
 
 @Component({
   selector: 'app-application',
@@ -9,9 +11,9 @@ import { Application, APPLICATIONS } from '../models/application';
   styleUrls: ['./application.component.css']
 })
 export class ApplicationComponent implements OnInit {
-  application: Application;
+  @Input() application: Application;
 
-  constructor(private route: ActivatedRoute) {
+  constructor(private route: ActivatedRoute, private applicationService: ApplicationService) {
   }
 
   ngOnInit() {
@@ -19,7 +21,9 @@ export class ApplicationComponent implements OnInit {
   }
 
   private getApplication() {
-    const id = this.route.snapshot.paramMap.get('id');
-    this.application = APPLICATIONS[id];
+    const id = +this.route.snapshot.paramMap.get('id');
+    this.applicationService.getApplication(id).subscribe(
+      application => this.application = application
+    );
   }
 }

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { Application, APPLICATIONS } from '../models/application';
+import { Application } from '../models/application';
 
 import { ApplicationService } from '../services/application.service';
 
