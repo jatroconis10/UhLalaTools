@@ -1,6 +1,7 @@
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var express = require('express');
+const cors = require("cors");
 var app = express();
 var Schema = mongoose.Schema;
 
@@ -8,7 +9,7 @@ app.use(bodyParser.json());
 
 mongoose.connect('mongodb://localhost:27017/uhlala-api');
 
-var mongoose = require('mongoose')
+app.use(cors());
 
 var applicationSchema = new Schema({
 	_id: Schema.Types.ObjectId,
@@ -80,13 +81,6 @@ app.post('/tests/:applicationId', function(req, res) {
     test.save(function(error, savedTest) {
    		if (error) return res.status(500).send(error);
         res.json(savedApp);
-    });
-});
-
-app.get('/tests', function(req, res) {
-    Test.find({}, function(error, tests) {
-       if (error) return res.status(500).send(error);
-       res.json(tests);
     });
 });
 
