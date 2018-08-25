@@ -21,7 +21,7 @@ export class ApplicationComponent implements OnInit {
   }
 
   private getApplication() {
-    const id = +this.route.snapshot.paramMap.get('id');
+    const id = this.route.snapshot.paramMap.get('id');
     this.applicationService.getApplication(id).subscribe(
       application => this.application = application
     );

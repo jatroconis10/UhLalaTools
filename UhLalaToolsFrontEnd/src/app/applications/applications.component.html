@@ -4,7 +4,7 @@
       <img class="card-img-top img-fluid" src="{{'/assets/images/application-' + (i % 9) + '.jpg'}}" alt="Application image">
       <div class="card-body">
         <h5 class="card-title">
-          <a routerLink="/applications/{{application.id}}">{{application.name}}</a>
+          <a routerLink="/applications/{{application._id}}">{{application.name}}</a>
         </h5>
         <p class="card-text">{{application.description}}</p>
       </div>

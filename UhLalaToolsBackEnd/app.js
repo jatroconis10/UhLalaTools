@@ -12,13 +12,11 @@ mongoose.connect('mongodb://localhost:27017/uhlala-api');
 app.use(cors());
 
 var applicationSchema = new Schema({
-	_id: Schema.Types.ObjectId,
     name: { type: String, required: true },
     description: String
 });
 
 var testSchema = Schema({
-	_id: Schema.Types.ObjectId,
 	application: { type: Schema.Types.ObjectId, ref: 'Application' },
   	name: { type: String, required: true },
   	description: String,

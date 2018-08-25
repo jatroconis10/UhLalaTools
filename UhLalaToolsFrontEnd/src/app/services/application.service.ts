@@ -25,7 +25,7 @@ export class ApplicationService {
     );
   }
 
-  getApplication(id: number): Observable<Application> {
+  getApplication(id: string): Observable<Application> {
     return this.http.get<Application>(`${this.applicationsUrl}/${id}`).pipe(
       catchError(this.errorHandlingService.handleError<Application>(`get the application`))
     );
@@ -37,7 +37,7 @@ export class ApplicationService {
     );
   }
 
-  deleteApplication (id: number): Observable<Application> {
+  deleteApplication (id: string): Observable<Application> {
     return this.http.delete<Application>(`${this.applicationsUrl}/${id}`, this.httpOptions).pipe(
       catchError(this.errorHandlingService.handleError<Application>(`delete the application`))
     );
