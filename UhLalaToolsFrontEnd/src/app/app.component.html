@@ -1,3 +1,17 @@
 <div class="container">
+  <nav class="navbar navbar-dark bg-dark">
+    <a class="navbar-brand" href="/">UhLalaTools</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarContent">
+      <ul class="navbar-nav mr-auto">
+        <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-item">
+          <a routerLink="/applications" class="nav-link">Applications</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
   <router-outlet></router-outlet>
 </div>
