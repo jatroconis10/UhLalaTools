@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 
 import { Application, APPLICATIONS } from '../models/application';
 
+import { ApplicationService } from '../services/application.service';
+
 declare const $: any;
 
 @Component({
@@ -13,7 +15,7 @@ export class ApplicationsComponent implements OnInit {
   applications: Application[];
   newApplication: Application;
 
-  constructor() {
+  constructor(private applicationService: ApplicationService) {
     this.applications = [];
     this.newApplication = new Application('', '');
   }
@@ -23,7 +25,9 @@ export class ApplicationsComponent implements OnInit {
   }
 
   private getApplications() {
-    this.applications = APPLICATIONS;
+    this.applicationService.getApplications().subscribe(
+      applications => this.applications = applications
+    );
   }
 
   onCloseForm() {
@@ -32,7 +36,9 @@ export class ApplicationsComponent implements OnInit {
 
   onSubmit() {
     $('#applicationFormModal').modal('hide');
-    this.applications.push(this.newApplication);
+    this.applicationService.createApplication(this.newApplication).subscribe(
+      application => this.applications.push(application)
+    );
     this.resetNewApplicationModel();
   }
 
