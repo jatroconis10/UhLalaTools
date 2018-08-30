@@ -13,7 +13,9 @@ app.use(cors());
 
 var applicationSchema = new Schema({
     name: { type: String, required: true },
-    description: String
+    description: String,
+    browsers: [String],
+    maxInstances: Number
 });
 
 var testSchema = Schema({
@@ -78,7 +80,45 @@ app.post('/tests/:applicationId', function(req, res) {
 	var test = new Test({application:req.params.applicationId, name: req.body.name, description: req.body.description, type: req.body.type});
     test.save(function(error, savedTest) {
    		if (error) return res.status(500).send(error);
-        res.json(savedApp);
+        res.json(savedTest);
+    });
+});
+
+app.post('/applications/browsers/:applicationId', function(req, res) {
+	Application.findById(req.param.applicationId, function(error, app){
+        app.browsers.push(req.body.browser);
+        app.save(function(error1, savedApp) {
+            if (error1) return res.status(500).send(error1);
+            res.json(savedApp);
+        });
+    });
+});
+
+app.post('/applications/maxInstances/:applicationId', function(req, res) {
+	Application.findById(req.param.applicationId, function(error, app){
+        app.maxInstances = req.body.maxInstances;
+        app.save(function(error1, savedApp) {
+            if (error1) return res.status(500).send(error1);
+            res.json(savedApp);
+        });
+    });
+});
+
+app.get('/applications/browsers/:applicationId', function(req, res) {
+	Application.findById(req.param.applicationId, function(error, app){
+        res.json(savedApp.browsers);
+    });
+});
+
+app.get('/applications/maxInstances/:applicationId', function(req, res) {
+	Application.findById(req.param.applicationId, function(error, app){
+        res.json(savedApp.maxInstances);
+    });
+});
+
+app.get('/applications/maxInstances/:applicationId', function(req, res) {
+	Application.findById(req.param.applicationId, function(error, app){
+        res.json(savedApp.maxInstances);
     });
 });
 
