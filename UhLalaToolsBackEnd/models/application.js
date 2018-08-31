@@ -6,7 +6,6 @@ var applicationSchema = new Schema({
     description: String,
     browsers: [String],
     maxInstances: Number,
-    commands:[Schema.Types.Mixed],
 });
 
 module.exports = mongoose.model('Application', applicationSchema);
