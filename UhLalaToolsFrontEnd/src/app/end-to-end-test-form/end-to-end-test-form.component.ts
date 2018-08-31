@@ -6,6 +6,7 @@ import { ApplicationService } from '../services/application.service';
 import { Application } from '../models/application';
 import { Test } from '../models/test';
 import { EndToEndTest } from '../models/end-to-end-test';
+import { COMMAND_LIST, EndToEndTestCommand } from '../models/end-to-end-test-command';
 
 @Component({
   selector: 'app-end-to-end-test-form',
@@ -17,7 +18,10 @@ export class EndToEndTestFormComponent implements OnInit {
   newEndToEndTest: EndToEndTest;
 
   constructor(private route: ActivatedRoute, private applicationService: ApplicationService) {
-    this.newEndToEndTest = new EndToEndTest(new Test('', ''));
+    const commands: EndToEndTestCommand[] = [
+      new EndToEndTestCommand('test', COMMAND_LIST[0])
+    ];
+    this.newEndToEndTest = new EndToEndTest(new Test('', ''), commands);
   }
 
   ngOnInit() {
@@ -25,6 +29,11 @@ export class EndToEndTestFormComponent implements OnInit {
   }
 
   onSubmit() {
+    console.log(this.newEndToEndTest);
+  }
+
+  onAddCommand() {
+    this.newEndToEndTest.commands.push(new EndToEndTestCommand('', ''));
     console.log(this.newEndToEndTest);
   }
 

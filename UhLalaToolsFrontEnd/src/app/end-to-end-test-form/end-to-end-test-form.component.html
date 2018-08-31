@@ -20,13 +20,57 @@
               </small>
             </div>
           </div>
+
           <div class="form-group">
             <label for="description">Description</label>
             <textarea [(ngModel)]="newEndToEndTest.test.description" #description="ngModel" name="description"
                       rows="4" class="form-control" id="description" aria-describedby="descriptionHelp"></textarea>
             <small id="descriptionHelp" class="form-text text-muted">This should be what the test will assert, for example: Verifies that the sign up can be performed</small>
           </div>
-          <button type="submit" [disabled]="!endToEndTestForm.form.valid" class="btn btn-success">Submit</button>
+
+          <label>Commands</label>
+          <div class="list-group mb-3">
+            <div *ngFor="let command of newEndToEndTest.commands" class="list-group-item">
+              <div class="row">
+                <div class="col-md-3 col-xs-12">
+                  <label for="command">Command</label>
+                  <select id="command" class="form-control">
+                    <option selected>goTo</option>
+                    <option>click</option>
+                    <option>keys</option>
+                    <option>selectByText</option>
+                    <option>waitVisible</option>
+                    <option>assertExists</option>
+                    <option>assertTextMatches</option>
+                  </select>
+                </div>
+              
+                <div class="col-md-9 col-xs-12">
+                  <div class="form-group">
+                    <label [class.text-danger]="selector.invalid && selector.touched" for="selector">
+                      Selector
+                      <span class="text-danger">*</span>
+                    </label>
+                    <input [(ngModel)]="command.selector" #selector="ngModel" name="selector" 
+                            type="text" required class="form-control" id="selector"
+                            [class.is-invalid]="selector.invalid && selector.touched">
+                    <small id="selectorHelp" class="form-text text-muted">This is the XPATH selector for the command</small>
+                    <div [hidden]="selector.valid || selector.untouched">
+                      <small class="text-danger">
+                        A selector for the commando is required
+                      </small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="mb-3">
+            <button (click)="onAddCommand();" type="button" class="btn btn-dark">Add command</button>
+          </div>
+          <div>
+            <button type="submit" [disabled]="!endToEndTestForm.form.valid" class="btn btn-success">Submit</button>
+          </div>
         </form>
       </div>
     </div>
