@@ -5,7 +5,8 @@ var applicationSchema = new Schema({
     name: { type: String, required: true },
     description: String,
     browsers: [String],
-    maxInstances: Number
+    maxInstances: Number,
+    commands:[Schema.Types.Mixed],
 });
 
 module.exports = mongoose.model('Application', applicationSchema);
