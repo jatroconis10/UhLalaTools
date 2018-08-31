@@ -5,28 +5,16 @@ const cors = require("cors");
 var app = express();
 var Schema = mongoose.Schema;
 
+var e2e = require('./modules/e2e')
+
 app.use(bodyParser.json());
 
 mongoose.connect('mongodb://localhost:27017/uhlala-api');
 
 app.use(cors());
 
-var applicationSchema = new Schema({
-    name: { type: String, required: true },
-    description: String,
-    browsers: [String],
-    maxInstances: Number
-});
-
-var testSchema = Schema({
-	application: { type: Schema.Types.ObjectId, ref: 'Application' },
-  	name: { type: String, required: true },
-  	description: String,
-  	type: String
-});
-
-var Application = mongoose.model('Application', applicationSchema);
-var Test = mongoose.model('Test', testSchema);
+var Application = require('./models/application');
+var Test = require('./models/test')
 
 app.get('/', function(req, res) {
     res.send('api uhlala tools');
@@ -147,6 +135,8 @@ app.delete('/tests/:id', function(req, res) {
         });
     });
 });
+
+app.use('/e2e', e2e);
 
 mongoose.connection.once('Connected', function() {
     console.log('Database connected')

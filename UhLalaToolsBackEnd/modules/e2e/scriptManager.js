@@ -1,9 +1,29 @@
 var fs = require('fs');
+var shell = require('shelljs')
 
 var newLine = "\n"
 var tab = "\t"
 
-var testTranslate = function(test) {
+var public = {}
+
+public.testsToScripts = function(appId, tests) {
+    createTestsDirs(appId);
+    tests.forEach(test => {
+        testTranslate(appId, test);
+    });
+}
+
+public.runScripts = function(appId) {
+    var dir = `tests/e2e/${appId}`
+    if(shell.test('-d', dir) && shell.ls(dir + '/scripts').length !== 0){
+        shell.exec(`./node_modules/.bin/wdio ${dir}/wdio.conf.js`)
+        return true;
+    } else {
+        return false;
+    }
+} 
+
+var testTranslate = function(appId, test) {
     var resultFile = {};
     resultFile.name = test.name;
 
@@ -21,25 +41,18 @@ var testTranslate = function(test) {
     data += `${tab}})` + newLine;
 
     data += '})';
-    createTestsDir()
-    fs.writeFileSync(`../../tests/e2e/${test.name.replace(/\s/g, '_')}.spec.js`, data)
+    createTestsDirs()
+    fs.writeFileSync(`../../tests/e2e/${appId}/scripts/${test._id.replace(/\s/g, '_')}.spec.js`, data)
 
     return data;
     
 }
 
-function createTestsDir() {
-    var dir = '../../tests'
-    var e2e = 'e2e'
-
-    if (!fs.existsSync(dir)){
-        fs.mkdirSync(dir);
-    }
-    dir = dir + '/' + e2e
-    if (!fs.existsSync(dir)){
-        fs.mkdirSync(dir);
-    }
-}
+function createTestsDirs(appId) {
+    var dir = '../../tests/e2e/' + appId.replace(/\s/g, '_')
+    var dirs = [dir + '/scripts', dir + '/reports']
+    shell.mkdir('-p', dirs)
+}   
 
 function commandToWebDriver(command) {
     var result = ''
@@ -72,6 +85,4 @@ function commandToWebDriver(command) {
     return result + newLine;
 }
 
-module.exports = {
-    testTranslate: testTranslate,
-}
+module.exports = public
