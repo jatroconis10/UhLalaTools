@@ -1,4 +1,4 @@
-export const COMMAND_LIST: string[] = ['goTo', 'click', 'keys', 'selectByText', 'waitVisible', 'assertExists', 'assertTextMatches'];
+export const COMMAND_TYPES: string[] = ['goTo', 'click', 'keys', 'selectByText', 'waitVisible', 'assertExists', 'assertTextMatches'];
 
 export class EndToEndTestCommand {
   selector: string;
