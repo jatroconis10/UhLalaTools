@@ -4,11 +4,13 @@ import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
 import { ApplicationsComponent } from './applications/applications.component';
 import { ApplicationComponent } from './application/application.component';
+import { EndToEndTestFormComponent } from './end-to-end-test-form/end-to-end-test-form.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'applications', component: ApplicationsComponent },
-  { path: 'applications/:id', component: ApplicationComponent }
+  { path: 'applications/:id', component: ApplicationComponent },
+  { path: 'applications/:id/end-to-end-tests/new', component: EndToEndTestFormComponent }
 ];
 
 @NgModule({

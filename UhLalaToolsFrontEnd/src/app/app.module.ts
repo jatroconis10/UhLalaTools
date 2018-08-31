@@ -9,13 +9,15 @@ import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { ApplicationsComponent } from './applications/applications.component';
 import { ApplicationComponent } from './application/application.component';
+import { EndToEndTestFormComponent } from './end-to-end-test-form/end-to-end-test-form.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     ApplicationsComponent,
-    ApplicationComponent
+    ApplicationComponent,
+    EndToEndTestFormComponent
   ],
   imports: [
     BrowserModule,

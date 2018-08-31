@@ -12,7 +12,7 @@
   </div>
 </div>
 <div class="mb-3 mt-3">
-  <button data-toggle="modal" data-target="#applicationFormModal" class="btn btn-primary">Create application</button>
+  <button data-toggle="modal" data-target="#applicationFormModal" class="btn btn-dark">Create application</button>
 </div>
 <div class="modal fade" id="applicationFormModal" tabindex="-1" role="dialog" aria-labelledby="applicationFormModal" aria-hidden="true">
   <form (ngSubmit)="onSubmit()" #applicationForm="ngForm">
@@ -51,7 +51,7 @@
         </div>
         <div class="modal-footer">
           <button (click)="onCloseForm(); applicationForm.reset();" type="button" class="btn btn-secondary" data-dismiss="modal">Discard</button>
-          <button [disabled]="!applicationForm.form.valid" type="submit" class="btn btn-primary">Save</button>
+          <button [disabled]="!applicationForm.form.valid" type="submit" class="btn btn-success">Save</button>
         </div>
       </div>
     </div>

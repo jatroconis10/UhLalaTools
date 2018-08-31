@@ -7,10 +7,18 @@
         <hr/>
         <h5>End-to-End Tests</h5>
         <div class="row">
-          <div class="col-3 d-flex align-items-stretch mb-3 mt-3">
-            
+          <div *ngFor="let endToEndTest of endToEndTests" class="col-3 d-flex align-items-stretch mb-3 mt-3">
+            <div class="card shadow">
+              <div class="card-body">
+                <h5 class="card-title">{{endToEndTest.test.name}}</h5>
+                <p class="card-text">{{endToEndTest.test.description}}</p>
+              </div>
+            </div>
           </div>
         </div>
+        <a routerLink="/applications/{{application._id}}/end-to-end-tests/new" class="btn btn-dark">
+          Add End to End Test
+        </a>
       </div>
     </div>
   </div>
