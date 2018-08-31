@@ -30,32 +30,30 @@
 
           <label>Commands</label>
           <div class="list-group mb-3">
-            <div *ngFor="let command of newEndToEndTest.commands" class="list-group-item">
+            <div *ngFor="let command of newEndToEndTest.commands; index as i" class="list-group-item">
               <div class="row">
                 <div class="col-md-3 col-xs-12">
                   <label for="command">Command</label>
                   <select id="command" class="form-control">
-                    <option selected>goTo</option>
-                    <option>click</option>
-                    <option>keys</option>
-                    <option>selectByText</option>
-                    <option>waitVisible</option>
-                    <option>assertExists</option>
-                    <option>assertTextMatches</option>
+                    <option *ngFor="let commandType of commandTypes" [value]="commandType">{{commandType}}</option>
                   </select>
                 </div>
               
                 <div class="col-md-9 col-xs-12">
                   <div class="form-group">
-                    <label [class.text-danger]="selector.invalid && selector.touched" for="selector">
+                    <label [class.text-danger]="selector[i].invalid && selector[i].touched" for="selector[i]">
                       Selector
                       <span class="text-danger">*</span>
                     </label>
-                    <input [(ngModel)]="command.selector" #selector="ngModel" name="selector" 
-                            type="text" required class="form-control" id="selector"
-                            [class.is-invalid]="selector.invalid && selector.touched">
+                    <span class="float-right">
+                      <span class="badge badge-pill badge-dark">Step #{{i + 1}}</span>
+                      <button (click)="onRemoveCommand(i)" type="button" class="btn btn-danger badge badge-pill ml-1">X</button>
+                    </span>
+                    <input [(ngModel)]="command.selector" #selector[i]="ngModel" name="selector[i]" 
+                            type="text" required class="form-control" id="selector[i]"
+                            [class.is-invalid]="selector[i].invalid && selector[i].touched">
                     <small id="selectorHelp" class="form-text text-muted">This is the XPATH selector for the command</small>
-                    <div [hidden]="selector.valid || selector.untouched">
+                    <div [hidden]="selector[i].valid || selector[i].untouched">
                       <small class="text-danger">
                         A selector for the commando is required
                       </small>

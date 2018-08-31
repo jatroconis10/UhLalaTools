@@ -6,7 +6,7 @@ import { ApplicationService } from '../services/application.service';
 import { Application } from '../models/application';
 import { Test } from '../models/test';
 import { EndToEndTest } from '../models/end-to-end-test';
-import { COMMAND_LIST, EndToEndTestCommand } from '../models/end-to-end-test-command';
+import { COMMAND_TYPES, EndToEndTestCommand } from '../models/end-to-end-test-command';
 
 @Component({
   selector: 'app-end-to-end-test-form',
@@ -14,12 +14,13 @@ import { COMMAND_LIST, EndToEndTestCommand } from '../models/end-to-end-test-com
   styleUrls: ['./end-to-end-test-form.component.css']
 })
 export class EndToEndTestFormComponent implements OnInit {
+  commandTypes = COMMAND_TYPES;
   application: Application;
   newEndToEndTest: EndToEndTest;
 
   constructor(private route: ActivatedRoute, private applicationService: ApplicationService) {
     const commands: EndToEndTestCommand[] = [
-      new EndToEndTestCommand('test', COMMAND_LIST[0])
+      new EndToEndTestCommand('', '')
     ];
     this.newEndToEndTest = new EndToEndTest(new Test('', ''), commands);
   }
@@ -34,7 +35,10 @@ export class EndToEndTestFormComponent implements OnInit {
 
   onAddCommand() {
     this.newEndToEndTest.commands.push(new EndToEndTestCommand('', ''));
-    console.log(this.newEndToEndTest);
+  }
+
+  onRemoveCommand(index: number) {
+    this.newEndToEndTest.commands.splice(index, 1);
   }
 
   private getApplication() {
