@@ -1,4 +1,6 @@
 export class Test {
+  _id?: string;
+  appId?: string;
   name: string;
   description?: string;
 

@@ -1,0 +1,34 @@
+<div *ngIf="application">
+  <div class="mt-3 mb-3">
+    <div class="card shadow">
+      <div class="card-body">
+        <h3 class="card-title">New End to End Test for {{application.name}}</h3>
+        <hr/>
+        <form (ngSubmit)="onSubmit()" #endToEndTestForm="ngForm">
+          <div class="form-group">
+            <label [class.text-danger]="name.invalid && name.touched" for="name">
+              Name
+              <span class="text-danger">*</span>
+            </label>
+            <input [(ngModel)]="newEndToEndTest.test.name" #name="ngModel" name="name" 
+                    type="text" required class="form-control" id="name"
+                    [class.is-invalid]="name.invalid && name.touched">
+            <small id="nameHelp" class="form-text text-muted">This is the name that will identify the test</small>
+            <div [hidden]="name.valid || name.untouched">
+              <small class="text-danger">
+                A name for the test is required
+              </small>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="description">Description</label>
+            <textarea [(ngModel)]="newEndToEndTest.test.description" #description="ngModel" name="description"
+                      rows="4" class="form-control" id="description" aria-describedby="descriptionHelp"></textarea>
+            <small id="descriptionHelp" class="form-text text-muted">This should be what the test will assert, for example: Verifies that the sign up can be performed</small>
+          </div>
+          <button type="submit" [disabled]="!endToEndTestForm.form.valid" class="btn btn-success">Submit</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

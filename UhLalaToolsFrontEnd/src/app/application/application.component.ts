@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Application } from '../models/application';
 
 import { ApplicationService } from '../services/application.service';
+import { EndToEndTest, END_TO_END_TESTS } from '../models/end-to-end-test';
 
 @Component({
   selector: 'app-application',
@@ -11,7 +12,8 @@ import { ApplicationService } from '../services/application.service';
   styleUrls: ['./application.component.css']
 })
 export class ApplicationComponent implements OnInit {
-  @Input() application: Application;
+  application: Application;
+  endToEndTests: EndToEndTest[];
 
   constructor(private route: ActivatedRoute, private applicationService: ApplicationService) {
   }
@@ -22,8 +24,13 @@ export class ApplicationComponent implements OnInit {
 
   private getApplication() {
     const id = this.route.snapshot.paramMap.get('id');
-    this.applicationService.getApplication(id).subscribe(
-      application => this.application = application
-    );
+    this.applicationService.getApplication(id).subscribe((application) => {
+      this.application = application;
+      this.getApplicationTests();
+    });
+  }
+
+  private getApplicationTests() {
+    this.endToEndTests = END_TO_END_TESTS;
   }
 }
