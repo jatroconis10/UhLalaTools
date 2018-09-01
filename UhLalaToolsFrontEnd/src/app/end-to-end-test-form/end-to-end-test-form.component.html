@@ -34,7 +34,7 @@
               <div class="row">
                 <div class="col-md-3 col-xs-12">
                   <label for="command">Command</label>
-                  <select [(ngModel)]="command.type" name="type" required id="command" class="form-control">
+                  <select [(ngModel)]="newEndToEndTest.commands[i].type" [ngModelOptions]="{standalone: true}" required class="form-control">
                     <option *ngFor="let commandType of commandTypes" [value]="commandType">{{commandType}}</option>
                   </select>
                 </div>
@@ -48,8 +48,7 @@
                       <span class="badge badge-pill badge-dark">Step #{{i + 1}}</span>
                       <button (click)="onRemoveCommand(i)" type="button" class="btn btn-danger badge badge-pill ml-1">X</button>
                     </span>
-                    <input [(ngModel)]="command.selector" name="selector"
-                            type="text" required class="form-control" id="selector[i]">
+                    <input [(ngModel)]="newEndToEndTest.commands[i].selector" [ngModelOptions]="{standalone: true}" type="text" required class="form-control">
                     <small id="selectorHelp" class="form-text text-muted">This is the appropriate selector for the command</small>
                   </div>
                 </div>
@@ -59,7 +58,7 @@
                     <label for="selector">
                       Value <span *ngIf="commandTypesValueRequired[command.type].required" class="text-danger">*</span>
                     </label>
-                    <input [(ngModel)]="command.value" name="value"
+                    <input [(ngModel)]="newEndToEndTest.commands[i].value" [ngModelOptions]="{standalone: true}"
                            [type]="commandTypesValueRequired[command.type].valueType"
                            [required]="commandTypesValueRequired[command.type].required"
                            class="form-control">
