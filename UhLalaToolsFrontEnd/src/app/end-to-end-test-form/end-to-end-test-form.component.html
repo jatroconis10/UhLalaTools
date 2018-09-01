@@ -34,30 +34,36 @@
               <div class="row">
                 <div class="col-md-3 col-xs-12">
                   <label for="command">Command</label>
-                  <select id="command" class="form-control">
+                  <select [(ngModel)]="command.type" name="type" required id="command" class="form-control">
                     <option *ngFor="let commandType of commandTypes" [value]="commandType">{{commandType}}</option>
                   </select>
                 </div>
               
                 <div class="col-md-9 col-xs-12">
                   <div class="form-group">
-                    <label [class.text-danger]="selector[i].invalid && selector[i].touched" for="selector[i]">
-                      Selector
-                      <span class="text-danger">*</span>
+                    <label for="selector">
+                      Selector <span class="text-danger">*</span>
                     </label>
                     <span class="float-right">
                       <span class="badge badge-pill badge-dark">Step #{{i + 1}}</span>
                       <button (click)="onRemoveCommand(i)" type="button" class="btn btn-danger badge badge-pill ml-1">X</button>
                     </span>
-                    <input [(ngModel)]="command.selector" #selector[i]="ngModel" name="selector[i]" 
-                            type="text" required class="form-control" id="selector[i]"
-                            [class.is-invalid]="selector[i].invalid && selector[i].touched">
-                    <small id="selectorHelp" class="form-text text-muted">This is the XPATH selector for the command</small>
-                    <div [hidden]="selector[i].valid || selector[i].untouched">
-                      <small class="text-danger">
-                        A selector for the commando is required
-                      </small>
-                    </div>
+                    <input [(ngModel)]="command.selector" name="selector"
+                            type="text" required class="form-control" id="selector[i]">
+                    <small id="selectorHelp" class="form-text text-muted">This is the appropriate selector for the command</small>
+                  </div>
+                </div>
+
+                <div *ngIf="commandTypesValueRequired[command.type]" class="col">
+                  <div class="form-group">
+                    <label for="selector">
+                      Value <span *ngIf="commandTypesValueRequired[command.type].required" class="text-danger">*</span>
+                    </label>
+                    <input [(ngModel)]="command.value" name="value"
+                           [type]="commandTypesValueRequired[command.type].valueType"
+                           [required]="commandTypesValueRequired[command.type].required"
+                           class="form-control">
+                    <small class="form-text text-muted">This is the appropriate value for the command</small>
                   </div>
                 </div>
               </div>
