@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { ApplicationService } from '../services/application.service';
+import { EndToEndTestService } from '../services/end-to-end-test.service';
 
 import { Application } from '../models/application';
 import { Test } from '../models/test';
@@ -19,7 +20,9 @@ export class EndToEndTestFormComponent implements OnInit {
   application: Application;
   newEndToEndTest: EndToEndTest;
 
-  constructor(private route: ActivatedRoute, private applicationService: ApplicationService) {
+  constructor(private router: Router, private route: ActivatedRoute,
+              private applicationService: ApplicationService,
+              private endToEndTestService: EndToEndTestService) {
     const commands: EndToEndTestCommand[] = [
       new EndToEndTestCommand('', this.commandTypes[0])
     ];
@@ -31,7 +34,9 @@ export class EndToEndTestFormComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.newEndToEndTest);
+    this.endToEndTestService.createEndToEndTest(this.application._id, this.newEndToEndTest).subscribe(
+      () => this.router.navigate([`applications/${this.application._id}`])
+    );
   }
 
   onAddCommand() {
