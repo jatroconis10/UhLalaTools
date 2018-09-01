@@ -1,5 +1,7 @@
 var fs = require('fs');
 var shell = require('shelljs')
+var config = require('./defaultWebdriverConfig')
+
 
 var newLine = "\n"
 var tab = "\t"
@@ -8,6 +10,7 @@ var public = {}
 
 public.testsToScripts = function(appId, tests) {
     createTestsDirs(appId);
+    config.writeConfig(appId)
     tests.forEach(test => {
         testTranslate(appId, test);
     });
@@ -41,15 +44,14 @@ var testTranslate = function(appId, test) {
     data += `${tab}})` + newLine;
 
     data += '})';
-    createTestsDirs()
-    fs.writeFileSync(`../../tests/e2e/${appId}/scripts/${test._id.replace(/\s/g, '_')}.spec.js`, data)
+    fs.writeFileSync(`tests/e2e/${appId}/scripts/${test._id}.spec.js`, data)
 
     return data;
     
 }
 
 function createTestsDirs(appId) {
-    var dir = '../../tests/e2e/' + appId.replace(/\s/g, '_')
+    var dir = 'tests/e2e/' + appId
     var dirs = [dir + '/scripts', dir + '/reports']
     shell.mkdir('-p', dirs)
 }   

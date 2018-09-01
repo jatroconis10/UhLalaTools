@@ -145,13 +145,6 @@ var getDefaultConfig = function(appId) {
             //
             // Jasmine default timeout
             defaultTimeoutInterval: 20000,
-            //
-            // The Jasmine framework allows interception of each assertion in order to log the state of the application
-            // or website depending on the result. For example, it is pretty handy to take a screenshot every time
-            // an assertion fails.
-            expectationResultHandler: function(passed, assertion) {
-                // do something
-            }
         },
         
         //
@@ -270,11 +263,11 @@ var getDefaultConfig = function(appId) {
 
 var writeConfig = function(appId, config) {
     var conf = Object.assign(getDefaultConfig(appId), config)
-    var configFileContent = 'exports.config = ' + util.inspect(conf)
-    fs.writeFileSync(`../../tests/e2e/${appId}/wdio.conf.js`, configFileContent)
+    var jsonConf = JSON.stringify(conf)
+    var configFileContent = 'exports.config = ' + jsonConf
+    fs.writeFileSync(`tests/e2e/${appId}/wdio.conf.js`, configFileContent)
 }
 
 module.exports = {
-    getDefaultConfig: getDefaultConfig,
     writeConfig: writeConfig,
 }

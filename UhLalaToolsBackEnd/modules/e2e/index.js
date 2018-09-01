@@ -2,17 +2,24 @@ var express = require('express');
 var shell = require('shelljs');
 var path = require('path')
 var Application = require('../../models/application');
-var Test = require('../../models/test');
+var E2ETest = require('./models/e2e-test');
 var scriptManager = require('./scriptManager');
+
+var ObjectId = require('mongoose').Types.ObjectId
 
 var router = express.Router()
 
 router.post('/generateScripts/:appId', function(req, res) {
     var appId = req.params.appId
-    Test.find({application: appId, type: 'e2e'})
+    console.log( new ObjectId(appId))
+    E2ETest.find({application: new ObjectId(appId)})
         .then( (tests) => {
-            scriptManager.testsToScripts(appId, tests)
-            res.json({message: "Scripts generados"})
+            if (tests.length != 0) {
+                scriptManager.testsToScripts(appId, tests)
+                res.json({message: "Scripts generados"})
+            } else {
+                res.status(404).json({message: 'There aren\'t any tests for this app'})
+            }
         })
 })
 
