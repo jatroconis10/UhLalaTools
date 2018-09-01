@@ -16,6 +16,8 @@ app.use(cors());
 var Application = require('./models/application');
 var Test = require('./models/test')
 
+var E2ETest = require('./modules/e2e/models/e2e-test');
+
 app.get('/', function(req, res) {
     res.send('api uhlala tools');
 });
@@ -26,6 +28,39 @@ app.get('/applications', function(req, res) {
        res.json(applications);
     });
 });
+
+app.get('/applications/:id/e2e', function(req, res) {
+    var id = new mongoose.Types.ObjectId(req.params.id)
+    E2ETest.find({application: id})
+        .then( (tests) => {
+            res.json(tests.map( function(test){
+                return {
+                    _id: test._id,
+                    commands: test.commands,
+                    test: {
+                        name: test.name,
+                        description: test.description
+                    }
+                }
+            }))
+        })
+})
+
+app.post('/applications/:id/e2e', function(req, res) {
+    var appId = new mongoose.Types.ObjectId(req.params.id)
+    var testBody = req.body
+
+    var e2eTest = new E2ETest({
+        application: appId,
+        name: testBody.test.name,
+        description: testBody.test.description,
+        commands: testBody.commands,
+    })
+    e2eTest.save(function(error, savedApp) {
+        if (error) return res.status(500).send(error);
+        res.json(savedApp);
+    });
+})
 
 app.get('/applications/:id', function(req, res) {
     Application.findById(req.params.id, function(error, application) {

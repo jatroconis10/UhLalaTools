@@ -9,6 +9,36 @@ var ObjectId = require('mongoose').Types.ObjectId
 
 var router = express.Router()
 
+router.get('/:testId', function(req, res) {
+    var id = req.params.testId;
+    E2ETest.findById(id, function(err, test) {
+        if (err || !test) {
+            res.status(404).json({message:'Couldn\'t find the e2e test'})
+        }else {
+            var response = {
+                _id: tes._id,
+                commands: test.commands,
+                test: {
+                    name: test.name,
+                    description: test.description
+                }
+            }
+            res.json(response)
+        }
+    })
+})
+
+router.delete('/:testId', function(req, res) {
+    var id = req.params.testId;
+    E2ETest.findByIdAndRemove(id, function(err, test) {
+        if(err || !test){
+            res.status(404).json({message:'Couldn\'t find the e2e test'})
+        } else {
+            res.json({message:'Deleted correctly the test'})
+        }
+    })
+})
+
 router.post('/generateScripts/:appId', function(req, res) {
     var appId = req.params.appId
     console.log( new ObjectId(appId))
