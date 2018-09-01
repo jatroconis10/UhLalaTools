@@ -14,9 +14,9 @@ router.get('/:testId', function(req, res) {
     E2ETest.findById(id, function(err, test) {
         if (err || !test) {
             res.status(404).json({message:'Couldn\'t find the e2e test'})
-        }else {
+        } else {
             var response = {
-                _id: tes._id,
+                _id: test._id,
                 commands: test.commands,
                 test: {
                     name: test.name,

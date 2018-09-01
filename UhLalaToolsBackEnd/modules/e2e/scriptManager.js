@@ -76,10 +76,10 @@ function commandToWebDriver(command) {
             result = `browser.waitForVisible('${command.selector}', ${timeout})`
             break;
         case 'assertExists':
-            result = `expect($('${command.selector}')).toBeDefined();`
+            result = `expect($('${command.selector}')).toBeDefined()`
             break;
         case 'assertTextMatches':
-            var getText = `$('${command.selector}').getText();` 
+            var getText = `$('${command.selector}').getText()` 
             result = `expect(${getText}).toBe('${command.value}')`
             break;
     }

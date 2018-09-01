@@ -10,7 +10,11 @@
           <div *ngFor="let endToEndTest of endToEndTests" class="col-3 d-flex align-items-stretch mb-3 mt-3">
             <div class="card shadow">
               <div class="card-body">
-                <h5 class="card-title">{{endToEndTest.test.name}}</h5>
+                <h5 class="card-title">
+                  <a routerLink="/end-to-end-tests/{{endToEndTest._id}}">
+                    {{endToEndTest.test.name}}
+                  </a>
+                </h5>
                 <p class="card-text">{{endToEndTest.test.description}}</p>
               </div>
             </div>

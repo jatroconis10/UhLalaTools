@@ -10,6 +10,7 @@ import { HomeComponent } from './home/home.component';
 import { ApplicationsComponent } from './applications/applications.component';
 import { ApplicationComponent } from './application/application.component';
 import { EndToEndTestFormComponent } from './end-to-end-test-form/end-to-end-test-form.component';
+import { EndToEndTestComponent } from './end-to-end-test/end-to-end-test.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { EndToEndTestFormComponent } from './end-to-end-test-form/end-to-end-tes
     HomeComponent,
     ApplicationsComponent,
     ApplicationComponent,
-    EndToEndTestFormComponent
+    EndToEndTestFormComponent,
+    EndToEndTestComponent
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,30 @@
+<div *ngIf="endToEndTest">
+  <div class="mt-3 mb-3">
+    <div class="card shadow">
+      <div class="card-body">
+        <h3 class="card-title">{{endToEndTest.test.name}}</h3>
+        <h4 class="card-subtitle mb-2 text-muted">{{endToEndTest.test.description}}</h4>
+        <hr/>
+        <h5>Commands</h5>
+        <div class="list-group mb-3">
+          <div *ngFor="let command of endToEndTest.commands; index as i" class="list-group-item">
+            <div class="row">
+              <div class="col-md-4">
+                <h5>Type</h5>
+                <p>{{command.type}}</p>
+              </div>
+              <div [class]="command.value ? 'col-md-4' : 'col-md-8'">
+                <h5>Selector</h5>
+                <p>{{command.selector}}</p>
+              </div>
+              <div *ngIf="command.value" class="col-md-4">
+                <h5>Value</h5>
+                <p>{{command.value}}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
