@@ -26,4 +26,8 @@ export class EndToEndTestComponent implements OnInit {
       this.endToEndTest = endToEndTest;
     });
   }
+
+  getEndToEndTestDownloadScriptUrl() {
+    return this.endToEndTestService.getEndToEndTestDownloadScriptUrl(this.endToEndTest);
+  }
 }

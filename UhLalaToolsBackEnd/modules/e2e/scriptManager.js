@@ -1,25 +1,40 @@
 var fs = require('fs');
-var shell = require('shelljs')
-var config = require('./defaultWebdriverConfig')
+var shell = require('shelljs');
+var config = require('./defaultWebdriverConfig');
+var configForTest = require('./webdriverConfForTest');
 
 
-var newLine = "\n"
-var tab = "\t"
+var newLine = "\n";
+var tab = "\t";
 
-var public = {}
+var public = {};
+
+public.getTestScriptPath = function(test) {
+    return `tests/e2e/${test.application}/${test._id}/scripts/${test._id}.spec.js`;
+}
+
+public.testToScript = function(test) {
+    createTestDir(test);
+    configForTest.writeConfigForTest(test);
+    testTranslate(test.application, test);
+}
 
 public.testsToScripts = function(appId, tests) {
     createTestsDirs(appId);
-    config.writeConfig(appId)
+    config.writeConfig(appId);
     tests.forEach(test => {
         testTranslate(appId, test);
     });
 }
 
+public.runTestScript = function(test) {
+    var dir = `tests/e2e/${test.application}`
+}
+
 public.runScripts = function(appId) {
-    var dir = `tests/e2e/${appId}`
-    if(shell.test('-d', dir) && shell.ls(dir + '/scripts').length !== 0){
-        shell.exec(`./node_modules/.bin/wdio ${dir}/wdio.conf.js`)
+    var dir = `tests/e2e/${appId}`;
+    if(shell.test('-d', dir) && shell.ls(dir + '/scripts').length !== 0) {
+        shell.exec(`./node_modules/.bin/wdio ${dir}/wdio.conf.js`);
         return true;
     } else {
         return false;
@@ -32,7 +47,7 @@ var testTranslate = function(appId, test) {
 
     var data = "var assert = require('assert');" + newLine;
 
-    data += `describe('${test.description}', function() {${newLine}`;
+    data += `describe('${test.name}', function() {${newLine}`;
 
     data += `${tab}it('${test.description}', function() {${newLine}`;
 
@@ -44,47 +59,51 @@ var testTranslate = function(appId, test) {
     data += `${tab}})` + newLine;
 
     data += '})';
-    fs.writeFileSync(`tests/e2e/${appId}/scripts/${test._id}.spec.js`, data)
+    fs.writeFileSync(`tests/e2e/${appId}/scripts/${test._id}.spec.js`, data);
 
     return data;
-    
 }
 
 function createTestsDirs(appId) {
-    var dir = 'tests/e2e/' + appId
-    var dirs = [dir + '/scripts', dir + '/reports']
-    shell.mkdir('-p', dirs)
-}   
+    var dir = 'tests/e2e/' + appId;
+    var dirs = [dir + '/scripts', dir + '/reports'];
+    shell.mkdir('-p', dirs);
+}
+
+function createTestDir(test) {
+    var dir = `tests/e2e/${test.application}/${test._id}`;
+    var dirs = [`${dir}/scripts`, `${dir}/reports`];
+    shell.mkdir('-p', dirs);
+}
 
 function commandToWebDriver(command) {
-    var result = ''
+    var result = '';
     switch (command.type) {
         case 'goTo':
-            result = `browser.url('${command.selector}')`
+            result = `browser.url('${command.selector}')`;
             break;
         case 'click':
-            result = `browser.click('${command.selector}')`
+            result = `browser.click('${command.selector}')`;
             break;
         case 'keys':
-            result = `$('${command.selector}').keys('${command.value}')`
+            result = `$('${command.selector}').keys('${command.value}')`;
             break;
         case 'selectByText':
-            result = `browser.selectByVisibleText('${command.selector}', '${command.value}')`
+            result = `browser.selectByVisibleText('${command.selector}', '${command.value}')`;
             break;
         case 'waitVisible':
-            var timeout = command.value || 500
-            result = `browser.waitForVisible('${command.selector}', ${timeout})`
+            var timeout = command.value || 500;
+            result = `browser.waitForVisible('${command.selector}', ${timeout})`;
             break;
         case 'assertExists':
-            result = `expect($('${command.selector}')).toBeDefined()`
+            result = `expect($('${command.selector}')).toBeDefined()`;
             break;
         case 'assertTextMatches':
-            var getText = `$('${command.selector}').getText()` 
-            result = `expect(${getText}).toBe('${command.value}')`
+            var getText = `$('${command.selector}').getText()`;
+            result = `expect(${getText}).toBe('${command.value}')`;
             break;
     }
-
     return result + newLine;
 }
 
-module.exports = public
+module.exports = public;

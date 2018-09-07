@@ -31,6 +31,10 @@ export class EndToEndTestService {
     );
   }
 
+  getEndToEndTestDownloadScriptUrl(endToEndTest: EndToEndTest): string {
+    return `${environment.apiUrl}/e2e/generateScript/${endToEndTest._id}`;
+  }
+
   createEndToEndTest(applicationId: string, endToEndTest: EndToEndTest): Observable<EndToEndTest> {
     const url = `${environment.apiUrl}/applications/${applicationId}/e2e`;
     return this.http.post<EndToEndTest>(url, endToEndTest, this.httpOptions).pipe(
