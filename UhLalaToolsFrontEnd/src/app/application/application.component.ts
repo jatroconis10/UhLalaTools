@@ -23,6 +23,10 @@ export class ApplicationComponent implements OnInit {
     this.getApplication();
   }
 
+  executeEndToEndTests() {
+    this.endToEndTestService.executeEndToEndTests(this.application._id).subscribe((x) => console.log(x));
+  }
+
   private getApplication() {
     const id = this.route.snapshot.paramMap.get('id');
     this.applicationService.getApplication(id).subscribe((application) => {

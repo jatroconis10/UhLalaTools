@@ -7,7 +7,7 @@
         <hr/>
         <div class="d-flex justify-content-between">
           <h5>End-to-End Tests</h5>
-          <button class="btn btn-dark">Execute tests</button>
+          <button (click)="executeEndToEndTests()" class="btn btn-dark">Execute tests</button>
         </div>
         <div class="row">
           <div *ngFor="let endToEndTest of endToEndTests"

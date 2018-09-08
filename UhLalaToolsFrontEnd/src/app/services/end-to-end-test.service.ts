@@ -27,12 +27,19 @@ export class EndToEndTestService {
 
   getEndToEndTest(id: string): Observable<EndToEndTest> {
     return this.http.get<EndToEndTest>(`${environment.apiUrl}/e2e/${id}`).pipe(
-      catchError(this.errorHandlingService.handleError<EndToEndTest>(`get the E2E test`))
+      catchError(this.errorHandlingService.handleError<EndToEndTest>('get the E2E test'))
     );
   }
 
   getEndToEndTestDownloadScriptUrl(endToEndTest: EndToEndTest): string {
     return `${environment.apiUrl}/e2e/getScript/${endToEndTest._id}`;
+  }
+
+  executeEndToEndTests(applicationId: string) {
+    const url = `${environment.apiUrl}/e2e/runScripts/${applicationId}`;
+    return this.http.post(url, null).pipe(
+      catchError(this.errorHandlingService.handleError('execute the E2E tests'))
+    );
   }
 
   createEndToEndTest(applicationId: string, endToEndTest: EndToEndTest): Observable<EndToEndTest> {
