@@ -38,14 +38,20 @@ router.delete('/:testId', function(req, res) {
     });
 });
 
-router.get('/generateScript/:testId', function(req, res) {
+router.get('/getScript/:testId', function(req, res) {
     var id = req.params.testId;
     E2ETest.findById(id, function(err, test) {
         if(err || !test){
             res.status(404).json({message:'Couldn\'t find the e2e test'})
         } else {
-            scriptManager.testToScript(test);
-            res.download(scriptManager.getTestScriptPath(test));
+            if (!test.generated) {
+                E2ETest.find({application: new ObjectId(test.application)}).then((tests) => {
+                    scriptManager.testsToScripts(test.application, tests)
+                    res.download(scriptManager.getTestScriptPath(test));
+                })
+            } else {
+                res.download(scriptManager.getTestScriptPath(test));
+            }
         }
     });
 });

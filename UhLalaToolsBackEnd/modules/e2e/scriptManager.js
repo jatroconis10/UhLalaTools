@@ -1,8 +1,6 @@
 var fs = require('fs');
 var shell = require('shelljs');
 var config = require('./defaultWebdriverConfig');
-var configForTest = require('./webdriverConfForTest');
-
 
 var newLine = "\n";
 var tab = "\t";
@@ -10,13 +8,7 @@ var tab = "\t";
 var public = {};
 
 public.getTestScriptPath = function(test) {
-    return `tests/e2e/${test.application}/${test._id}/scripts/${test._id}.spec.js`;
-}
-
-public.testToScript = function(test) {
-    createTestDir(test);
-    configForTest.writeConfigForTest(test);
-    testTranslate(test.application, test);
+    return `tests/e2e/${test.application}/scripts/${test._id}.spec.js`;
 }
 
 public.testsToScripts = function(appId, tests) {
@@ -25,10 +17,6 @@ public.testsToScripts = function(appId, tests) {
     tests.forEach(test => {
         testTranslate(appId, test);
     });
-}
-
-public.runTestScript = function(test) {
-    var dir = `tests/e2e/${test.application}`
 }
 
 public.runScripts = function(appId) {
@@ -67,12 +55,6 @@ var testTranslate = function(appId, test) {
 function createTestsDirs(appId) {
     var dir = 'tests/e2e/' + appId;
     var dirs = [dir + '/scripts', dir + '/reports'];
-    shell.mkdir('-p', dirs);
-}
-
-function createTestDir(test) {
-    var dir = `tests/e2e/${test.application}/${test._id}`;
-    var dirs = [`${dir}/scripts`, `${dir}/reports`];
     shell.mkdir('-p', dirs);
 }
 

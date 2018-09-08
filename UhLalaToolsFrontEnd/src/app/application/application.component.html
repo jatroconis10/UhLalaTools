@@ -5,9 +5,13 @@
         <h3 class="card-title">{{application.name}}</h3>
         <h4 class="card-subtitle mb-2 text-muted">{{application.description}}</h4>
         <hr/>
-        <h5>End-to-End Tests</h5>
+        <div class="d-flex justify-content-between">
+          <h5>End-to-End Tests</h5>
+          <button class="btn btn-dark">Execute tests</button>
+        </div>
         <div class="row">
-          <div *ngFor="let endToEndTest of endToEndTests" class="col-3 d-flex align-items-stretch mb-3 mt-3">
+          <div *ngFor="let endToEndTest of endToEndTests"
+               class="col-3 d-flex align-items-stretch mb-3 mt-3">
             <div class="card shadow">
               <div class="card-body">
                 <h5 class="card-title">
@@ -15,7 +19,17 @@
                     {{endToEndTest.test.name}}
                   </a>
                 </h5>
-                <p class="card-text">{{endToEndTest.test.description}}</p>
+                <div class="card-text">
+                  {{endToEndTest.test.description}}
+                  <div [ngSwitch]="endToEndTest.generated">
+                    <strong *ngSwitchCase="true" class="text-primary">Script generated</strong>
+                    <strong *ngSwitchCase="false" class="text-secondary">Script not generated</strong>
+                  </div>
+                  <div [ngSwitch]="endToEndTest.executed">
+                    <strong *ngSwitchCase="true" class="text-primary">Executed</strong>
+                    <strong *ngSwitchCase="false" class="text-secondary">Not executed</strong>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

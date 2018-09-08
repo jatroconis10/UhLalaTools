@@ -32,7 +32,7 @@ export class EndToEndTestService {
   }
 
   getEndToEndTestDownloadScriptUrl(endToEndTest: EndToEndTest): string {
-    return `${environment.apiUrl}/e2e/generateScript/${endToEndTest._id}`;
+    return `${environment.apiUrl}/e2e/getScript/${endToEndTest._id}`;
   }
 
   createEndToEndTest(applicationId: string, endToEndTest: EndToEndTest): Observable<EndToEndTest> {

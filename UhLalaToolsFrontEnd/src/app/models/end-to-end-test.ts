@@ -10,6 +10,8 @@ export const END_TO_END_TESTS: EndToEndTest[] = [
       name: 'Testea login exitoso',
       description: 'Ingresa a los estudiantes y realiza un login exitoso en la plataforma.',
     },
+    generated: false,
+    executed: false,
     commands: []
   },
   {
@@ -20,6 +22,8 @@ export const END_TO_END_TESTS: EndToEndTest[] = [
       name: 'Testea signup exitoso',
       description: 'Ingresa a los estudiantes y realiza un signup exitoso en la plataforma.',
     },
+    generated: false,
+    executed: false,
     commands: []
   }
 ];
@@ -27,10 +31,14 @@ export const END_TO_END_TESTS: EndToEndTest[] = [
 export class EndToEndTest {
   _id?: string;
   test: Test;
+  generated: Boolean;
+  executed: Boolean;
   commands: EndToEndTestCommand[];
 
   constructor(test: Test, commands?: EndToEndTestCommand[]) {
     this.test = test;
+    this.generated = false;
+    this.executed = false;
     if (commands) {
       this.commands = commands;
     } else {

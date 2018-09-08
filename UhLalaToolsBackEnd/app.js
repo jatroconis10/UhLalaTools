@@ -37,6 +37,8 @@ app.get('/applications/:id/e2e', function(req, res) {
                 return {
                     _id: test._id,
                     commands: test.commands,
+                    generated: test.generated,
+                    executed: test.executed,
                     test: {
                         name: test.name,
                         description: test.description
@@ -54,7 +56,9 @@ app.post('/applications/:id/e2e', function(req, res) {
         application: appId,
         name: testBody.test.name,
         description: testBody.test.description,
-        commands: testBody.commands,
+        generated: testBody.generated,
+        executed: testBody.executed,
+        commands: testBody.commands
     })
     e2eTest.save(function(error, savedApp) {
         if (error) return res.status(500).send(error);
