@@ -1,7 +1,7 @@
 var fs = require('fs');
 var shell = require('shelljs');
-//var config = require('./defaultWebdriverConfig');
-//var configForTest = require('./webdriverConfForTest');
+var config = require('./defaultWebdriverConfig');
+var path = require('path');
 
 
 var newLine = "\n";
@@ -10,31 +10,23 @@ var tab = "\t";
 var public = {};
 
 public.getTestScriptPath = function(test) {
-    return `tests/random/${test.application}/${test._id}/scripts/${test._id}.spec.js`;
+    return `tests/random/${test.application}/scripts/${test._id}-gremlins-test.js`;
 }
 
-public.testToScript = function(test) {
-    createTestDir(test);
-    //configForTest.writeConfigForTest(test);
-    testTranslate(test.application, test);
-}
-
-public.testsToScripts = function(appId, tests) {
-    createTestsDirs(appId);
-    //config.writeConfig(appId);
+public.testsToScripts = function(application, tests) {
+    createTestsDirs(application._id);
+    config.writeConfig(application);
     tests.forEach(test => {
-        testTranslate(appId, test);
+        testTranslate(application._id, test);
     });
-}
-
-public.runTestScript = function(test) {
-    var dir = `tests/random/${test.application}`
 }
 
 public.runScripts = function(appId) {
     var dir = `tests/random/${appId}`;
     if(shell.test('-d', dir) && shell.ls(dir + '/scripts').length !== 0) {
-        shell.exec(`./node_modules/.bin/wdio ${dir}/wdio.conf.js`);
+        var dir1 = path.normalize('./node_modules/.bin/wdio');
+        var dir2 = path.normalize(`${dir}/wdio.conf.js`);
+        shell.exec(dir1 + ' ' + dir2);
         return true;
     } else {
         return false;
@@ -70,9 +62,9 @@ var testTranslate = function(appId, test) {
     data += "  horde.unleash();" + newLine;
     data += "}" + newLine;
 
-    data +="describe('Monkey testing with gremlins ', function() {" + newLine;
+    data +=`describe('${test.name}', function() {` + newLine;
 
-    data +="  it('it should not raise any error', function() {" + newLine;
+    data +=`  it('${test.description}', function() {` + newLine;
     data +="    browser.url('/');" + newLine;
 
     data +="    browser.timeoutsAsyncScript(60000);" + newLine;
@@ -98,12 +90,6 @@ var testTranslate = function(appId, test) {
 function createTestsDirs(appId) {
     var dir = 'tests/random/' + appId;
     var dirs = [dir + '/scripts', dir + '/reports'];
-    shell.mkdir('-p', dirs);
-}
-
-function createTestDir(test) {
-    var dir = `tests/random/${test.application}/${test._id}`;
-    var dirs = [`${dir}/scripts`, `${dir}/reports`];
     shell.mkdir('-p', dirs);
 }
 

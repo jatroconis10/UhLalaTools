@@ -38,26 +38,32 @@ router.delete('/:testId', function(req, res) {
     })
 })
 
-router.post('randomTest/generateScripts/:appId', function(req, res) {
+router.post('/generateScripts/:appId', function(req, res) {
     var appId = req.params.appId
     console.log( new ObjectId(appId))
-    RandomTest.find({application: new ObjectId(appId)})
-        .then( (tests) => {
-            if (tests.length != 0) {
-                scriptManager.testsToScripts(appId, tests)
-                res.json({message: "Scripts generados"})
-            } else {
-                res.status(404).json({message: 'There aren\'t any tests for this app'})
-            }
-        })
+    Application.findById(appId, function(error, app){
+        if(app){
+            RandomTest.find({application: new ObjectId(appId)})
+            .then( (tests) => {
+                if (tests.length != 0) {
+                    scriptManager.testsToScripts(app, tests)
+                    res.json({message: "Scripts generados"})
+                } else {
+                    res.status(404).json({message: 'There aren\'t any tests for this app'})
+                }
+            })
+        } else {
+            res.status(404).json({message: 'There isn\'t any app with this id'})
+        }
+    })
 })
 
-router.post('randomTest/runScripts/:appId', function(req, res) {
+router.post('/runScripts/:appId', function(req, res) {
     var appId = req.params.appId
     if(scriptManager.runScripts(appId)) {
         res.json({message: 'Scripts run'})
     } else {
-        res.status(404).json({message: 'Can\t run tests for this app'})
+        res.status(404).json({message: 'Can\'t run tests for this app'})
     }
 })
 

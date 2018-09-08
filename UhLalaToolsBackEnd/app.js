@@ -6,6 +6,7 @@ var app = express();
 var Schema = mongoose.Schema;
 
 var e2e = require('./modules/e2e')
+var random = require('./modules/random')
 
 app.use(bodyParser.json());
 
@@ -17,6 +18,7 @@ var Application = require('./models/application');
 var Test = require('./models/test')
 
 var E2ETest = require('./modules/e2e/models/e2e-test');
+var RandomTest = require('./modules/random/models/random-test');
 
 app.get('/', function(req, res) {
     res.send('api uhlala tools');
@@ -66,6 +68,22 @@ app.post('/applications/:id/e2e', function(req, res) {
     });
 })
 
+app.post('/applications/:id/random', function(req, res) {
+    var appId = new mongoose.Types.ObjectId(req.params.id)
+    var testBody = req.body
+
+    var randomTest = new RandomTest({
+        application: appId,
+        name: testBody.test.name,
+        description: testBody.test.description,
+        numGremlins: testBody.test.numGremlins,
+    })
+    randomTest.save(function(error, savedTest) {
+        if (error) return res.status(500).send(error);
+        res.json(savedTest);
+    });
+})
+
 app.get('/applications/:id', function(req, res) {
     Application.findById(req.params.id, function(error, application) {
        if (error) return res.status(500).send(error);
@@ -77,6 +95,7 @@ app.post('/applications', function(req, res) {
 	var application = new Application();
     application.name = req.body.name;
     application.description = req.body.description || 'No hay descripcion';
+    application.url = req.body.url;
 
     application.save(function(error, savedApp) {
         if (error) return res.status(500).send(error);
@@ -176,6 +195,7 @@ app.delete('/tests/:id', function(req, res) {
 });
 
 app.use('/e2e', e2e);
+app.use('/random', random);
 
 mongoose.connection.once('Connected', function() {
     console.log('Database connected')
