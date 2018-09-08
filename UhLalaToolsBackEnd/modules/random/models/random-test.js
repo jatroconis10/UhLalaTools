@@ -9,4 +9,4 @@ var randomTestSchema = Schema({
   	numGremlins: Number,
 });
 
-module.exports = mongoose.model('E2E_Test', e2eTestSchema);
+module.exports = mongoose.model('Random_Test', randomTestSchema);
