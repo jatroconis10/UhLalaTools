@@ -56,6 +56,17 @@ router.get('/getScript/:testId', function(req, res) {
     });
 });
 
+router.get('/getReport/:testId', function(req, res) {
+    var id = req.params.testId;
+    E2ETest.findById(id, function(err, test) {
+        if(err || !test || !test.executed){
+            res.status(404).json({message:'Couldn\'t find the e2e test'})
+        } else {
+            res.download(scriptManager.getTestReportPath(test));
+        }
+    });
+});
+
 router.post('/generateScripts/:appId', function(req, res) {
     var appId = req.params.appId
     E2ETest.find({application: new ObjectId(appId)})
@@ -69,9 +80,9 @@ router.post('/generateScripts/:appId', function(req, res) {
         });
 });
 
-router.post('/runScripts/:appId', function(req, res) {
+router.post('/runScripts/:appId', async function(req, res) {
     var appId = req.params.appId
-    if(scriptManager.runScripts(appId)) {
+    if(await scriptManager.runScripts(appId)) {
         res.json({message: 'Scripts run'})
     } else {
         res.status(404).json({message: 'Can\'t run tests for this app'})

@@ -35,6 +35,10 @@ export class EndToEndTestService {
     return `${environment.apiUrl}/e2e/getScript/${endToEndTest._id}`;
   }
 
+  getEndToEndTestDownloadReportUrl(endToEndTest: EndToEndTest): string {
+    return `${environment.apiUrl}/e2e/getReport/${endToEndTest._id}`;
+  }
+
   executeEndToEndTests(applicationId: string) {
     const url = `${environment.apiUrl}/e2e/runScripts/${applicationId}`;
     return this.http.post(url, null).pipe(
