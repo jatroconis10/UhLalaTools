@@ -68,22 +68,6 @@ app.post('/applications/:id/e2e', function(req, res) {
     });
 })
 
-app.post('/applications/:id/random', function(req, res) {
-    var appId = new mongoose.Types.ObjectId(req.params.id)
-    var testBody = req.body
-
-    var randomTest = new RandomTest({
-        application: appId,
-        name: testBody.test.name,
-        description: testBody.test.description,
-        numGremlins: testBody.test.numGremlins,
-    })
-    randomTest.save(function(error, savedTest) {
-        if (error) return res.status(500).send(error);
-        res.json(savedTest);
-    });
-})
-
 app.get('/applications/:id', function(req, res) {
     Application.findById(req.params.id, function(error, application) {
        if (error) return res.status(500).send(error);
@@ -195,7 +179,7 @@ app.delete('/tests/:id', function(req, res) {
 });
 
 app.use('/e2e', e2e);
-app.use('/random', random);
+app.use('/', random);
 
 mongoose.connection.once('Connected', function() {
     console.log('Database connected')

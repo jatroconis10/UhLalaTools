@@ -123,7 +123,7 @@ var getDefaultConfig = function(application) {
         // Test reporter for stdout.
         // The only one supported by default is 'dot'
         // see also: http://webdriver.io/guide/testrunner/reporters.html
-        reporters: ['spec'],
+        reporters: ['dot'],
 
         //
         // Options to be passed to Jasmine.
