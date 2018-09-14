@@ -24,7 +24,7 @@ export class ApplicationComponent implements OnInit {
   }
 
   executeEndToEndTests() {
-    this.endToEndTestService.executeEndToEndTests(this.application._id).subscribe((x) => console.log(x));
+    this.endToEndTestService.executeEndToEndTests(this.application._id).subscribe(() => this.getApplicationTests());
   }
 
   private getApplication() {
@@ -39,5 +39,13 @@ export class ApplicationComponent implements OnInit {
     this.endToEndTestService.getEndToEndTests(this.application._id).subscribe((endToEndTests) => {
       this.endToEndTests = endToEndTests;
     });
+  }
+
+  getEndToEndTestDownloadScriptUrl(endToEndTest: EndToEndTest) {
+    return this.endToEndTestService.getEndToEndTestDownloadScriptUrl(endToEndTest);
+  }
+
+  getEndToEndTestDownloadReportUrl(endToEndTest: EndToEndTest) {
+    return this.endToEndTestService.getEndToEndTestDownloadReportUrl(endToEndTest);
   }
 }

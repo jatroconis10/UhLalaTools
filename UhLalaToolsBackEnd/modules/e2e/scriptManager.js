@@ -1,6 +1,7 @@
 var fs = require('fs');
 var shell = require('shelljs');
 var config = require('./defaultWebdriverConfig');
+var path = require('path');
 
 var E2ETest = require('./models/e2e-test');
 
@@ -13,6 +14,10 @@ public.getTestScriptPath = function(test) {
     return `tests/e2e/${test.application}/scripts/${test._id}.spec.js`;
 }
 
+public.getTestReportPath = function(test) {
+    return `tests/e2e/${test.application}/reports/wdio-report.html`;
+}
+
 public.testsToScripts = function(appId, tests) {
     createTestsDirs(appId);
     config.writeConfig(appId);
@@ -23,17 +28,30 @@ public.testsToScripts = function(appId, tests) {
     });
 }
 
-public.runScripts = function(appId) {
+public.runScripts = async function(appId) {
     var dir = `tests/e2e/${appId}`;
+    
     if(shell.test('-d', dir) && shell.ls(dir + '/scripts').length !== 0) {
-        shell.exec(`./node_modules/.bin/wdio ${dir}/wdio.conf.js`);
-        E2ETest.find({application: appId}).then((tests) => {
-            tests.forEach((test) => {
-                test.executed = true;
-                test.save();
+        var wdio = path.normalize('./node_modules/.bin/wdio');
+        var conf = path.normalize(`${dir}/wdio.conf.js`);
+
+        var execPromise = new Promise(function(resolve, reject) {
+            shell.exec(`${wdio} ${conf}`, function(code, stdout, stderr) {
+                if (code != 0) return reject(new Error(stderr));
+                return resolve(stdout);
             });
         });
-        return true;
+
+        var result = await execPromise.then(() => {
+            E2ETest.find({application: appId}).then((tests) => {
+                tests.forEach((test) => {
+                    test.executed = true;
+                    test.save();
+                });
+            });
+            return true;
+        }).catch(() => false);
+        return result;
     } else {
         return false;
     }
