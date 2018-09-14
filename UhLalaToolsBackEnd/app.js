@@ -7,6 +7,7 @@ var Schema = mongoose.Schema;
 
 var e2e = require('./modules/e2e')
 var random = require('./modules/random')
+var bdd = require('./modules/bdd')
 
 app.use(bodyParser.json());
 
@@ -180,6 +181,7 @@ app.delete('/tests/:id', function(req, res) {
 
 app.use('/e2e', e2e);
 app.use('/', random);
+app.use('/', bdd);
 
 mongoose.connection.once('Connected', function() {
     console.log('Database connected')
