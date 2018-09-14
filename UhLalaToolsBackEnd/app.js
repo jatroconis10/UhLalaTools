@@ -34,7 +34,7 @@ app.get('/applications', function(req, res) {
 app.get('/applications/:id/e2e', function(req, res) {
     var id = new mongoose.Types.ObjectId(req.params.id)
     E2ETest.find({application: id})
-        .then( (tests) => {
+        .then((tests) => {
             res.json(tests.map( function(test){
                 return {
                     _id: test._id,

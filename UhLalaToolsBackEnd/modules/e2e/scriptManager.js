@@ -2,6 +2,8 @@ var fs = require('fs');
 var shell = require('shelljs');
 var config = require('./defaultWebdriverConfig');
 
+var E2ETest = require('./models/e2e-test');
+
 var newLine = "\n";
 var tab = "\t";
 
@@ -16,6 +18,8 @@ public.testsToScripts = function(appId, tests) {
     config.writeConfig(appId);
     tests.forEach(test => {
         testTranslate(appId, test);
+        test.generated = true;
+        test.save();
     });
 }
 
@@ -23,11 +27,17 @@ public.runScripts = function(appId) {
     var dir = `tests/e2e/${appId}`;
     if(shell.test('-d', dir) && shell.ls(dir + '/scripts').length !== 0) {
         shell.exec(`./node_modules/.bin/wdio ${dir}/wdio.conf.js`);
+        E2ETest.find({application: appId}).then((tests) => {
+            tests.forEach((test) => {
+                test.executed = true;
+                test.save();
+            });
+        });
         return true;
     } else {
         return false;
     }
-} 
+}
 
 var testTranslate = function(appId, test) {
     var resultFile = {};
