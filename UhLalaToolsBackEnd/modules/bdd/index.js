@@ -1,6 +1,7 @@
 var express = require('express');
 var Application = require('../../models/application');
 var BddTest = require('./models/bdd-test');
+var scriptManager = require('./scriptManager');
 
 var ObjectId = require('mongoose').Types.ObjectId;
 
@@ -80,5 +81,33 @@ router.post('/applications/:appId/bdd/:featureId/scenario/:scenarioId/alias', fu
         })
     })
 })
+
+router.post('/applications/:appId/bdd/generateScripts', function(req, res) {
+    var appId = req.params.appId
+    Application.findById(appId, function(error, app){
+        if(app){
+            BddTest.find({application: new ObjectId(appId)})
+            .then( (tests) => {
+                if (tests.length != 0) {
+                    scriptManager.testsToScripts(app, tests)
+                    res.json({message: "Scripts generados"})
+                } else {
+                    res.status(404).json({message: 'There aren\'t any tests for this app'})
+                }
+            })
+        } else {
+            res.status(404).json({message: 'There isn\'t any app with this id'})
+        }
+    })
+})
+
+router.post('/applications/:appId/bdd/run', async function(req, res) {
+    var appId = req.params.appId
+    if(await scriptManager.runScripts(appId)) {
+        res.json({message: 'Scripts run'})
+    } else {
+        res.status(404).json({message: 'Can\'t run tests for this app'})
+    }
+});
 
 module.exports = router

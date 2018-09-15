@@ -5,6 +5,7 @@ var bddTestSchema = Schema({
     application: { type: Schema.Types.ObjectId, ref: 'Application' },
     feature: { type: String, required: true},
     scenarios: [{
+        description: String,
         given: [{command: String}],
         when: [{command: String}],
         then: [{command: String}],
