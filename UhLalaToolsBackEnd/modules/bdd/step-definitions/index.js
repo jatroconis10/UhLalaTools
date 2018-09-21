@@ -33,12 +33,12 @@ defineSupportCode(({
 
     var passwordInput = cajaLogIn.element('input[name="password"]');
     passwordInput.click();
-    passwordInput.keys('123467891')
+    passwordInput.keys('123467891');
   });
 
   When('I try to login', () => {
     var cajaLogIn = browser.element('.cajaLogIn');
-    cajaLogIn.element('button=Ingresar').click()
+    cajaLogIn.element('button=Ingresar').click();
   });
 
   Then('I expect to not be able to login', () => {

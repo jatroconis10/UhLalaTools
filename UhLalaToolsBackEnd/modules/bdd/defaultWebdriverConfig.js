@@ -254,16 +254,16 @@ var getDefaultConfig = function(application) {
      */
     // onComplete: function(exitCode) {
     // }
-    }
-}
+    };
+};
 
 var writeConfig = function(application, config) {
-    var conf = Object.assign(getDefaultConfig(application), config)
-    var jsonConf = JSON.stringify(conf)
-    var configFileContent = 'exports.config = ' + jsonConf
-    fs.writeFileSync(`tests/bdd/${application._id}/wdio.conf.js`, configFileContent)
-}
+    var conf = Object.assign(getDefaultConfig(application), config);
+    var jsonConf = JSON.stringify(conf);
+    var configFileContent = 'exports.config = ' + jsonConf;
+    fs.writeFileSync(`tests/bdd/${application._id}/wdio.conf.js`, configFileContent);
+};
 
 module.exports = {
     writeConfig: writeConfig,
-}
+};

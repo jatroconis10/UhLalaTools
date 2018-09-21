@@ -38,7 +38,7 @@ router.delete('/bdd/:featureId', function (req, res) {
 });
 
 router.post('/applications/:appId/bdd', function (req, res) {
-    var appId = req.params.appId
+    var appId = req.params.appId;
     Application.findById(appId, function (error, app) {
         if (app) {
             var testBody = req.body;
@@ -79,22 +79,22 @@ router.post('/applications/:appId/bdd/:featureId/scenario/:scenarioId/alias', fu
         //Add validation of incoming alias (it refers to valid commands)
 
         if (!test.scenariosAlias[scenarioId]) {
-            test.scenariosAlias[scenarioId] = {}
+            test.scenariosAlias[scenarioId] = {};
         }
 
         var aliasType = newAlias.type;
 
         if (!test.scenariosAlias[scenarioId][aliasType]) {
-            test.scenariosAlias[scenarioId][aliasType] = []
+            test.scenariosAlias[scenarioId][aliasType] = [];
         }
 
-        test.scenariosAlias[scenarioId][aliasType].push(newAlias.alias)
+        test.scenariosAlias[scenarioId][aliasType].push(newAlias.alias);
         test.save(function (updateErr, updatedTest) {
             if (updateErr) return res.status(500).send(updateErr);
             res.json(updatedTest);
-        })
-    })
-})
+        });
+    });
+});
 
 router.post('/applications/:appId/bdd/generateScripts', function (req, res) {
     var appId = req.params.appId;
@@ -105,10 +105,10 @@ router.post('/applications/:appId/bdd/generateScripts', function (req, res) {
                 })
                 .then((tests) => {
                     if (tests.length != 0) {
-                        scriptManager.testsToScripts(app, tests)
+                        scriptManager.testsToScripts(app, tests);
                         res.json({
                             message: "Scripts generados"
-                        })
+                        });
                     } else {
                         res.status(404).json({
                             message: 'There aren\'t any tests for this app'
@@ -125,7 +125,8 @@ router.post('/applications/:appId/bdd/generateScripts', function (req, res) {
 
 router.post('/applications/:appId/bdd/run', async function (req, res) {
     var appId = req.params.appId;
-    if (await scriptManager.runScripts(appId)) {
+    var result = await scriptManager.runScripts(appId);
+    if (result) {
         res.json({
             message: 'Scripts run'
         });
