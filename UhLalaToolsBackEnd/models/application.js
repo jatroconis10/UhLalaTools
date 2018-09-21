@@ -6,10 +6,16 @@ var applicationSchema = new Schema({
         type: String,
         required: true
     },
+    platform: {
+        type: String,
+        required: true
+    },
     description: String,
     browsers: [String],
     maxInstances: Number,
     url: String,
+    apkName: String,
+    apk: Buffer
 });
 
 module.exports = mongoose.model('Application', applicationSchema);

@@ -54,6 +54,28 @@ app.get('/applications/:id/e2e', function (req, res) {
         });
 });
 
+app.get('/applications/:id/random', function (req, res) {
+    var id = new mongoose.Types.ObjectId(req.params.id);
+    RandomTest.find({
+            application: id
+        })
+        .then(function (tests) {
+            res.json(tests.map(function (test) {
+                return {
+                    _id: test._id,
+                    startUrl: test.startUrl,
+                    description: test.description,
+                    numRuns: test.numRuns,
+                    numGremlins: test.numGremlins,
+                    test: {
+                        name: test.name,
+                        description: test.description
+                    }
+                };
+            }));
+        });
+});
+
 app.post('/applications/:id/e2e', function (req, res) {
     var appId = new mongoose.Types.ObjectId(req.params.id);
     var testBody = req.body;
@@ -69,6 +91,24 @@ app.post('/applications/:id/e2e', function (req, res) {
     e2eTest.save(function (error, savedApp) {
         if (error) return res.status(500).send(error);
         res.json(savedApp);
+    });
+});
+
+app.post('/applications/:id/random', function(req, res) {
+    var appId = new mongoose.Types.ObjectId(req.params.id);
+    var testBody = req.body;
+
+    var randomTest = new RandomTest({
+        application: appId,
+        name: testBody.test.name,
+        description: testBody.test.description,
+        startUrl: testBody.startUrl,
+        numRuns: testBody.numRuns,
+        numGremlins: testBody.numGremlins
+    });
+    randomTest.save(function (error, test) {
+        if (error) return res.status(500).send(error);
+        res.json(test);
     });
 });
 

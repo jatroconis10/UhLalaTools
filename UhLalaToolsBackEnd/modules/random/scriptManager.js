@@ -7,9 +7,7 @@ var path = require('path');
 var config = require('./defaultWebdriverConfig');
 var RandomtestError = require('./models/random-test').RandomTestError;
 
-
 var newLine = '\n';
-var tab = '\t';
 
 var public = {};
 
