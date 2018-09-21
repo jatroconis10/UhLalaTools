@@ -14,8 +14,11 @@ var applicationSchema = new Schema({
     browsers: [String],
     maxInstances: Number,
     url: String,
-    apkName: String,
-    apk: Buffer
+    apkPackage: String,
+    apkUploaded: {
+        type: Boolean,
+        default: false
+    }
 });
 
 module.exports = mongoose.model('Application', applicationSchema);

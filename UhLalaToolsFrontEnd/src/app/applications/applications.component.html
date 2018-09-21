@@ -6,7 +6,27 @@
         <h5 class="card-title">
           <a routerLink="/applications/{{application._id}}">{{application.name}}</a>
         </h5>
-        <p class="card-text">{{application.description}}</p>
+        <h6 class="card-subtitle mb-2 text-muted">{{application.description}}</h6>
+        <p class="card-text">
+          <strong>{{application.platform}}</strong>
+          <br>
+          Max. instances: {{application.maxInstances}}
+        </p>
+        <div *ngIf="application.platform === 'Web'">
+          <strong>URL</strong>
+          <br>
+          <a [href]="application.url" target="_blank">{{application.url}}</a>
+          <br>
+          <strong>Navegadores</strong>
+          <ul>
+            <li *ngFor="let browser of application.browsers">{{browser}}</li>
+          </ul>
+        </div>
+        <div *ngIf="application.platform === 'Mobile'">
+          <strong>apk Package</strong>
+          <br>
+          <span>{{application.apkPackage}}</span>
+        </div>
       </div>
     </div>
   </div>
@@ -14,13 +34,15 @@
 <div class="mb-3 mt-3">
   <button data-toggle="modal" data-target="#applicationFormModal" class="btn btn-dark">Create application</button>
 </div>
-<div class="modal fade" id="applicationFormModal" tabindex="-1" role="dialog" aria-labelledby="applicationFormModal" aria-hidden="true">
+<div class="modal fade" id="applicationFormModal" tabindex="-1" role="dialog" aria-labelledby="applicationFormModal"
+  aria-hidden="true">
   <form (ngSubmit)="onSubmit()" #applicationForm="ngForm">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title">Create application</h5>
-          <button type="button" (click)="onCloseForm(); applicationForm.reset();" class="close" data-dismiss="modal" aria-label="Close">
+          <button type="button" (click)="onCloseForm(); applicationForm.reset();" class="close" data-dismiss="modal"
+            aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
@@ -28,29 +50,71 @@
           <div class="form-group">
             <label [class.text-danger]="name.invalid && name.touched" for="name">
               Name
-              <span class="text-danger">
-                *
-              </span>
+              <span class="text-danger">*</span>
             </label>
-            <input [(ngModel)]="newApplication.name" #name="ngModel" name="name" 
-                   type="text" required class="form-control" id="name"
-                   [class.is-invalid]="name.invalid && name.touched">
+            <input [(ngModel)]="newApplication.name" #name="ngModel" name="name" type="text" required class="form-control"
+              id="name" [class.is-invalid]="name.invalid && name.touched">
             <div [hidden]="name.valid || name.untouched">
               <small class="text-danger">
                 A name for the application is required
               </small>
             </div>
           </div>
-      
+
+          <div class="form-group">
+            <label [class.text-danger]="maxInstances.invalid && maxInstances.touched" for="maxInstances">
+              Max. number of instances
+              <span class="text-danger">
+                *
+              </span>
+            </label>
+            <input [(ngModel)]="newApplication.maxInstances" #maxInstances="ngModel" name="maxInstances" type="number"
+              min="1" value="1" required class="form-control" id="maxInstances" [class.is-invalid]="maxInstances.invalid && maxInstances.touched">
+            <div [hidden]="maxInstances.valid || maxInstances.untouched">
+              <small class="text-danger">
+                The max number of instances is required
+              </small>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="platform">Platform</label>
+            <select (change)="onChangePlatform()" [(ngModel)]="newApplication.platform" name="platform" #platform="ngModel" required class="form-control" id="platform">
+              <option *ngFor="let platform of platforms" [value]="platform">{{platform}}</option>
+            </select>
+          </div>
+
+          <div [ngSwitch]="newApplication.platform">
+            <div *ngSwitchCase="'Web'">
+              <div class="form-group">
+                <label for="browsers">Browsers<span class="text-danger">*</span></label>
+                <select [(ngModel)]="newApplication.browsers" #browsers="ngModel" name="browsers" multiple required class="form-control" id="browsers">
+                  <option value="chrome">Chrome</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="url">URL<span class="text-danger">*</span></label>
+                <input [(ngModel)]="newApplication.url" #url="ngModel" name="url" type="text" required class="form-control" id="url">
+              </div>
+            </div>
+            <div *ngSwitchCase="'Mobile'">
+              <div class="form-group">
+                <label for="apkPackage">apk Package<span class="text-danger">*</span></label>
+                <input [(ngModel)]="newApplication.apkPackage" #apkPackage="ngModel" name="apkPackage" type="text" required class="form-control" id="apkPackage">
+              </div>
+            </div>
+          </div>
+
           <div class="form-group">
             <label for="description">Description</label>
-            <textarea [(ngModel)]="newApplication.description" name="description"
-                      #description="ngModel" rows="5" class="form-control" id="description">
+            <textarea [(ngModel)]="newApplication.description" name="description" #description="ngModel" rows="3" class="form-control"
+              id="description">
             </textarea>
           </div>
         </div>
         <div class="modal-footer">
-          <button (click)="onCloseForm(); applicationForm.reset();" type="button" class="btn btn-secondary" data-dismiss="modal">Discard</button>
+          <button (click)="onCloseForm(); applicationForm.reset();" type="button" class="btn btn-secondary"
+            data-dismiss="modal">Discard</button>
           <button [disabled]="!applicationForm.form.valid" type="submit" class="btn btn-success">Save</button>
         </div>
       </div>

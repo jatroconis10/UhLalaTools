@@ -7,6 +7,8 @@ import { ApplicationService } from '../services/application.service';
 import { EndToEndTest } from '../models/end-to-end-test';
 import { EndToEndTestService } from '../services/end-to-end-test.service';
 
+import { environment } from '../../environments/environment';
+
 @Component({
   selector: 'app-application',
   templateUrl: './application.component.html',
@@ -47,5 +49,9 @@ export class ApplicationComponent implements OnInit {
 
   getEndToEndTestDownloadReportUrl(endToEndTest: EndToEndTest) {
     return this.endToEndTestService.getEndToEndTestDownloadReportUrl(endToEndTest);
+  }
+
+  private getApkUploadUrl() {
+    return `${environment.apiDeviceUrl}/apks/${this.application._id}`;
   }
 }

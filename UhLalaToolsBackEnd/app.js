@@ -124,6 +124,10 @@ app.post('/applications', function (req, res) {
     application.name = req.body.name;
     application.description = req.body.description || 'No hay descripcion';
     application.url = req.body.url;
+    application.platform = req.body.platform;
+    application.maxInstances = req.body.maxInstances;
+    application.browser = req.body.browser;
+    application.apkPackage = req.body.apkPackage;
 
     application.save(function (error, savedApp) {
         if (error) return res.status(500).send(error);

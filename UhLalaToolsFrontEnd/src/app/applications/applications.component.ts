@@ -14,14 +14,22 @@ declare const $: any;
 export class ApplicationsComponent implements OnInit {
   applications: Application[];
   newApplication: Application;
+  platforms: string[] = ['Web', 'Mobile'];
+  browsers: {option: string, value: string}[] = [{option: 'Chrome', value: 'chrome'}];
 
   constructor(private applicationService: ApplicationService) {
     this.applications = [];
-    this.newApplication = new Application('', '');
+    this.newApplication = new Application('', this.platforms[0], 1);
   }
 
   ngOnInit() {
     this.getApplications();
+  }
+
+  onChangePlatform() {
+    if (this.newApplication.platform === 'Web') {
+      this.newApplication.browsers = [this.browsers[0].value];
+    }
   }
 
   private getApplications() {
@@ -43,6 +51,6 @@ export class ApplicationsComponent implements OnInit {
   }
 
   private resetNewApplicationModel() {
-    this.newApplication = new Application('', '');
+    this.newApplication = new Application('', this.platforms[0], 1);
   }
 }

@@ -4,39 +4,76 @@
       <div class="card-body">
         <h3 class="card-title">{{application.name}}</h3>
         <h4 class="card-subtitle mb-2 text-muted">{{application.description}}</h4>
-        <hr/>
-        <div class="d-flex justify-content-between">
-          <h5>End-to-End Tests</h5>
-          <button (click)="executeEndToEndTests()" class="btn btn-dark">Execute tests</button>
-        </div>
-        <div class="row">
-          <div *ngFor="let endToEndTest of endToEndTests"
-               class="col-3 d-flex align-items-stretch mb-3 mt-3">
-            <div class="card shadow w-100">
-              <div class="card-body">
-                <h5 class="card-title">
-                  <a routerLink="/end-to-end-tests/{{endToEndTest._id}}">
-                    {{endToEndTest.test.name}}
-                  </a>
-                </h5>
-                <div class="card-text">
-                  {{endToEndTest.test.description}}
-                  <div [ngSwitch]="endToEndTest.generated">
-                    <a href="{{getEndToEndTestDownloadScriptUrl(endToEndTest)}}" *ngSwitchCase="true" class="text-primary">Script generated</a>
-                    <strong *ngSwitchCase="false" class="text-secondary">Script not generated</strong>
-                  </div>
-                  <div [ngSwitch]="endToEndTest.executed">
-                    <a href="{{getEndToEndTestDownloadReportUrl(endToEndTest)}}" *ngSwitchCase="true" class="text-primary">Executed</a>
-                    <strong *ngSwitchCase="false" class="text-secondary">Not executed</strong>
+        <hr />
+
+        <div *ngIf="application.platform==='Web'">
+          <div class="d-flex justify-content-between">
+            <h5>End-to-End Tests</h5>
+            <button (click)="executeEndToEndTests()" class="btn btn-dark">Execute tests</button>
+          </div>
+          <div class="row">
+            <div *ngFor="let endToEndTest of endToEndTests" class="col-3 d-flex align-items-stretch mb-3 mt-3">
+              <div class="card shadow w-100">
+                <div class="card-body">
+                  <h5 class="card-title">
+                    <a routerLink="/end-to-end-tests/{{endToEndTest._id}}">
+                      {{endToEndTest.test.name}}
+                    </a>
+                  </h5>
+                  <div class="card-text">
+                    {{endToEndTest.test.description}}
+                    <div [ngSwitch]="endToEndTest.generated">
+                      <a href="{{getEndToEndTestDownloadScriptUrl(endToEndTest)}}" *ngSwitchCase="true" class="text-primary">Script
+                        generated</a>
+                      <strong *ngSwitchCase="false" class="text-secondary">Script not generated</strong>
+                    </div>
+                    <div [ngSwitch]="endToEndTest.executed">
+                      <a href="{{getEndToEndTestDownloadReportUrl(endToEndTest)}}" *ngSwitchCase="true" class="text-primary">Executed</a>
+                      <strong *ngSwitchCase="false" class="text-secondary">Not executed</strong>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+          <a routerLink="/applications/{{application._id}}/end-to-end-tests/new" class="btn btn-dark">
+            Add End to End Test
+          </a>
         </div>
-        <a routerLink="/applications/{{application._id}}/end-to-end-tests/new" class="btn btn-dark">
-          Add End to End Test
-        </a>
+
+        <div *ngIf="application.platform==='Mobile'">
+          <div *ngIf="!application.apkUploaded">
+            <button data-toggle="modal" data-target="#apkFormModal" class="btn btn-dark">Upload apk</button>
+            <div class="modal fade" id="apkFormModal" tabindex="-1" role="dialog" aria-labelledby="applicationFormModal"
+              aria-hidden="true">
+              <form [action]="getApkUploadUrl()" method="post" enctype="multipart/form-data">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title">Upload apk</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <div class="form-group">
+                        <label for="apk">apk Package</label>
+                        <input type="file" name="apk" class="form-control-file" id="apk">
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Discard</button>
+                      <button type="submit" data-dismiss="modal" class="btn btn-success">Upload</button>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+          <div *ngIf="application.apkUploaded">
+            <h5>Behaviour Driven Testing</h5>
+          </div>
+        </div>
       </div>
     </div>
   </div>
