@@ -29,6 +29,9 @@
     "webdriverio": "^4.13.2"
   },
   "devDependencies": {
-    "wdio-spec-reporter": "^0.1.5"
+    "wdio-spec-reporter": "^0.1.5",
+    "chai": "^4.1.2",
+    "wdio-cucumber-framework": "^1.0.2",
+    "wdio-selenium-standalone-service": "0.0.10"
   }
 }
