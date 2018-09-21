@@ -1,69 +1,68 @@
+/*jshint esversion: 6 */
+
 var fs = require('fs');
 var shell = require('shelljs');
 var path = require('path');
 
 var config = require('./defaultWebdriverConfig');
-var RandomtestError = require('./models/bdd-test').RandomTestError;
 
-
-var newLine = "\n";
-var tab = "\t";
+var newLine = '\n';
 
 var public = {};
 
-public.getTestScriptPath = function(test) {
+public.getTestScriptPath = function (test) {
     return `tests/bdd/${test.application}/features/${test._id}.feature`;
-}
+};
 
-public.testsToScripts = function(application, tests) {
-    setup(application)
+public.testsToScripts = function (application, tests) {
+    setup(application);
     tests.forEach(test => {
         testTranslate(application._id, test);
     });
-}
+};
 
-public.runScripts = async function(appId) {
+public.runScripts = async function (appId) {
     var dir = `tests/bdd/${appId}`;
-    if(shell.test('-d', dir) && shell.ls(dir + '/features').length !== 0) {
+    if (shell.test('-d', dir) && shell.ls(dir + '/features').length !== 0) {
         var wdio = path.normalize('node_modules/webdriverio/bin/wdio');
         var conf = path.normalize(`${dir}/wdio.conf.js`);
-        var result = shell.exec(`node ${wdio} ${conf}`, function(code){
+        shell.exec(`node ${wdio} ${conf}`, function (code) {
             if (code === 0) {
-                console.log("Success")
+                console.log("Success");
             } else {
-                console.log("fail")
+                console.log("Fail");
             }
         });
         return true;
     } else {
         return false;
     }
-} 
+}
 
-var testTranslate = function(appId, test, seed) {
+var testTranslate = function (appId, test, seed) {
     var resultFile = {};
     resultFile.name = test.name;
 
     var data = `Feature: ${test.feature}` + newLine;
     data += newLine;
-    test.scenarios.forEach(scenario=>{
+    test.scenarios.forEach(scenario => {
         data += `Scenario: ${scenario.description}` + newLine;
-        scenario.given.forEach(given=>{
+        scenario.given.forEach(given => {
             data += "   Given " + given.command + newLine;
         });
-        scenario.when.forEach(when=>{
+        scenario.when.forEach(when => {
             data += "   When " + when.command + newLine;
         });
-        scenario.when.forEach(then=>{
+        scenario.when.forEach(then => {
             data += "   Then " + then.command + newLine;
         });
-        data += newLine
+        data += newLine;
     });
-    
+
     fs.writeFileSync(`tests/bdd/${appId}/features/${test._id}.feature`, data);
 
     return data;
-}
+};
 
 function createTestsDirs(appId) {
     // Rethink the directories considering the fleeting nature of tests

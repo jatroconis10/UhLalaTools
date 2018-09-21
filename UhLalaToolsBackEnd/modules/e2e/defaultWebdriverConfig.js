@@ -1,9 +1,9 @@
 var util = require('util');
 var fs = require('fs');
 
-var getDefaultConfig = function(appId) {
+var getDefaultConfig = function (appId) {
     return {
-    
+
         //
         // ==================
         // Specify Test Files
@@ -50,7 +50,7 @@ var getDefaultConfig = function(appId) {
             //
             browserName: 'chrome',
             chromeOptions: {
-                args: [ "--headless", "--disable-gpu", "--window-size=1980,1080" ]
+                args: ["--headless", "--disable-gpu", "--window-size=1980,1080"]
             },
         }],
         //
@@ -135,10 +135,10 @@ var getDefaultConfig = function(appId) {
 
         reporterOptions: {
             htmlFormat: {
-            outputDir: `./tests/e2e/${appId}/reports/`
+                outputDir: `./tests/e2e/${appId}/reports/`
             },
         },
-        
+
         //
         // Options to be passed to Jasmine.
         jasmineNodeOpts: {
@@ -146,7 +146,7 @@ var getDefaultConfig = function(appId) {
             // Jasmine default timeout
             defaultTimeoutInterval: 20000,
         },
-        
+
         //
         // =====
         // Hooks
@@ -186,7 +186,7 @@ var getDefaultConfig = function(appId) {
          */
         // beforeCommand: function (commandName, args) {
         // },
-        
+
         /**
          * Hook that gets executed before the suite starts
          * @param {Object} suite suite details
@@ -223,7 +223,7 @@ var getDefaultConfig = function(appId) {
          */
         // afterSuite: function (suite) {
         // },
-        
+
         /**
          * Runs after a WebdriverIO command gets executed
          * @param {String} commandName hook command name
@@ -261,7 +261,7 @@ var getDefaultConfig = function(appId) {
     }
 }
 
-var writeConfig = function(appId, config) {
+var writeConfig = function (appId, config) {
     var conf = Object.assign(getDefaultConfig(appId), config)
     var jsonConf = JSON.stringify(conf)
     var configFileContent = 'exports.config = ' + jsonConf

@@ -1,10 +1,20 @@
-var {defineSupportCode} = require('cucumber');
-var {expect} = require('chai');
+/* jshint esversion: 6 */
 
-defineSupportCode(({Given, When, Then}) => {
+var {
+  defineSupportCode
+} = require('cucumber');
+var {
+  expect
+} = require('chai');
+
+defineSupportCode(({
+  Given,
+  When,
+  Then
+}) => {
   Given('I go to losestudiantes home screen', () => {
     browser.url('/');
-    if(browser.isVisible('button=Cerrar')) {
+    if (browser.isVisible('button=Cerrar')) {
       browser.click('button=Cerrar');
     }
   });

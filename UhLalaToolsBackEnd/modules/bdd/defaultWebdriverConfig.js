@@ -1,3 +1,5 @@
+/* jshint esversion: 6 */
+
 var util = require('util');
 var fs = require('fs');
 

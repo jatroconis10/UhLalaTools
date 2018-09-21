@@ -1,9 +1,9 @@
 var util = require('util');
 var fs = require('fs');
 
-var getDefaultConfig = function(application) {
+var getDefaultConfig = function (application) {
     return {
-    
+
         //
         // ==================
         // Specify Test Files
@@ -14,11 +14,11 @@ var getDefaultConfig = function(application) {
         // directory is where your package.json resides, so `wdio` will be called from there.
         //
         specs: [
-            `./tests/random/${application._id}/scripts/*.js`
+            './tests/random/' + application._id + '/scripts/*.js'
         ],
         // Patterns to exclude.
         exclude: [
-        // 'path/to/excluded/files'
+            // 'path/to/excluded/files'
         ],
         //
         // ============
@@ -43,12 +43,12 @@ var getDefaultConfig = function(application) {
         // https://docs.saucelabs.com/reference/platforms-configurator
         //
         capabilities: [{
-        // maxInstances can get overwritten per capability. So if you have an in-house Selenium
-        // grid with only 5 firefox instances available you can make sure that not more than
-        // 5 instances get started at a time.
-        maxInstances: 5,
-        //
-        browserName: 'chrome'
+            // maxInstances can get overwritten per capability. So if you have an in-house Selenium
+            // grid with only 5 firefox instances available you can make sure that not more than
+            // 5 instances get started at a time.
+            maxInstances: 5,
+            //
+            browserName: 'chrome'
         }],
         //
         // ===================
@@ -76,7 +76,7 @@ var getDefaultConfig = function(application) {
         //
         // Set a base URL in order to shorten url command calls. If your url parameter starts
         // with "/", then the base url gets prepended.
-        baseUrl: `${application.url}`,
+        baseUrl: application.url,
         //
         // Default timeout for all waitFor* commands.
         waitforTimeout: 10000,
@@ -128,18 +128,18 @@ var getDefaultConfig = function(application) {
         //
         // Options to be passed to Jasmine.
         jasmineNodeOpts: {
-        //
-        // Jasmine default timeout
-        defaultTimeoutInterval: 80000,
-        //
-        // The Jasmine framework allows interception of each assertion in order to log the state of the application
-        // or website depending on the result. For example, it is pretty handy to take a screenshot every time
-        // an assertion fails.
-        expectationResultHandler: function(passed, assertion) {
-          // do something
-        }
+            //
+            // Jasmine default timeout
+            defaultTimeoutInterval: 80000,
+            //
+            // The Jasmine framework allows interception of each assertion in order to log the state of the application
+            // or website depending on the result. For example, it is pretty handy to take a screenshot every time
+            // an assertion fails.
+            expectationResultHandler: function (passed, assertion) {
+                // do something
+            }
         },
-        
+
         //
         // =====
         // Hooks
@@ -179,7 +179,7 @@ var getDefaultConfig = function(application) {
          */
         // beforeCommand: function (commandName, args) {
         // },
-        
+
         /**
          * Hook that gets executed before the suite starts
          * @param {Object} suite suite details
@@ -216,7 +216,7 @@ var getDefaultConfig = function(application) {
          */
         // afterSuite: function (suite) {
         // },
-        
+
         /**
          * Runs after a WebdriverIO command gets executed
          * @param {String} commandName hook command name
@@ -251,16 +251,16 @@ var getDefaultConfig = function(application) {
          */
         // onComplete: function(exitCode, config, capabilities) {
         // }
-    }
-}
+    };
+};
 
-var writeConfig = function(application, config) {
-    var conf = Object.assign(getDefaultConfig(application), config)
-    var jsonConf = JSON.stringify(conf)
-    var configFileContent = 'exports.config = ' + jsonConf
-    fs.writeFileSync(`tests/random/${application._id}/wdio.conf.js`, configFileContent)
-}
+var writeConfig = function (application, config) {
+    var conf = Object.assign(getDefaultConfig(application), config);
+    var jsonConf = JSON.stringify(conf);
+    var configFileContent = 'exports.config = ' + jsonConf;
+    fs.writeFileSync('tests/random/' + application._id + '/wdio.conf.js', configFileContent);
+};
 
 module.exports = {
     writeConfig: writeConfig,
-}
+};
