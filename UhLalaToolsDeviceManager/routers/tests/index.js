@@ -1,6 +1,8 @@
+/* jshint esversion: 6 */
+
 const express = require('express');
 
-const random = require('./random')
+const random = require('./random');
 const bdd = require('./bdd');
 
 var router = express.Router();
