@@ -18,7 +18,9 @@ var applicationSchema = new Schema({
     apkUploaded: {
         type: Boolean,
         default: false
-    }
+    },
+    windowWidth: Number,
+    windowHeight: Number
 });
 
 module.exports = mongoose.model('Application', applicationSchema);

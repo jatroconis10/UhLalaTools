@@ -1,6 +1,10 @@
 var fs = require('fs');
 
 var getDefaultConfig = function (application) {
+    var caps = [];
+    application.browsers.forEach(browser=>{
+        caps.push({browserName: browser, maxInstances:application.maxInstances});
+    })
     return {
 
         //
@@ -41,14 +45,7 @@ var getDefaultConfig = function (application) {
         // Sauce Labs platform configurator - a great tool to configure your capabilities:
         // https://docs.saucelabs.com/reference/platforms-configurator
         //
-        capabilities: [{
-            // maxInstances can get overwritten per capability. So if you have an in-house Selenium
-            // grid with only 5 firefox instances available you can make sure that not more than
-            // 5 instances get started at a time.
-            maxInstances: 5,
-            //
-            browserName: 'chrome'
-        }],
+        capabilities: caps,
         //
         // ===================
         // Test Configurations
@@ -169,8 +166,9 @@ var getDefaultConfig = function (application) {
          * @param {Array.<Object>} capabilities list of capabilities details
          * @param {Array.<String>} specs List of spec file paths that are to be run
          */
-        // before: function (capabilities, specs) {
-        // },
+        before: function (capabilities, specs) {
+           browser.windowHandleSize({width: application.windowWidth, height: application.windowHeight});
+        }
         /**
          * Runs before a WebdriverIO command gets executed.
          * @param {String} commandName hook command name

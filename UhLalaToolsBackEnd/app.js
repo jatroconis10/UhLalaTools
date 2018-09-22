@@ -94,23 +94,7 @@ app.post('/applications/:id/e2e', function (req, res) {
     });
 });
 
-app.post('/applications/:id/random', function(req, res) {
-    var appId = new mongoose.Types.ObjectId(req.params.id);
-    var testBody = req.body;
 
-    var randomTest = new RandomTest({
-        application: appId,
-        name: testBody.test.name,
-        description: testBody.test.description,
-        startUrl: testBody.startUrl,
-        numRuns: testBody.numRuns,
-        numGremlins: testBody.numGremlins
-    });
-    randomTest.save(function (error, test) {
-        if (error) return res.status(500).send(error);
-        res.json(test);
-    });
-});
 
 app.get('/applications/:id', function (req, res) {
     Application.findById(req.params.id, function (error, application) {
@@ -126,7 +110,7 @@ app.post('/applications', function (req, res) {
     application.url = req.body.url;
     application.platform = req.body.platform;
     application.maxInstances = req.body.maxInstances;
-    application.browser = req.body.browser;
+    application.browsers = req.body.browsers;
     application.apkPackage = req.body.apkPackage;
 
     application.save(function (error, savedApp) {
@@ -242,7 +226,7 @@ app.delete('/tests/:id', function (req, res) {
 });
 
 app.use('/e2e', e2e);
-app.use('/random', random);
+app.use('/', random);
 app.use('/', bdd);
 
 mongoose.connection.once('Connected', function () {
