@@ -19,9 +19,7 @@ router.get('/', (req, res) => {
 });
 
 var storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, apks);
-    },
+    destination: apks,
     filename: function (req, file, cb) {
         cb(null, `${req.params.appId}.apk`);
     }
