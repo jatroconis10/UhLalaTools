@@ -2,3 +2,5 @@
 !.android/devices.xml
 tests
 apks
+mutants
+appsSources
