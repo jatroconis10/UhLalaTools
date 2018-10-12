@@ -1,0 +1,22 @@
+{
+  "name": "docker_web_app",
+  "version": "1.0.0",
+  "description": "",
+  "author": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.329.0",
+    "dotenv": "^6.0.0",
+    "mongoose": "^5.3.2",
+    "path": "^0.12.7",
+    "pngjs": "^3.3.3",
+    "shelljs": "^0.8.2",
+    "wdio-html-format-reporter": "^0.2.9",
+    "wdio-jasmine-framework": "^0.3.6",
+    "wdio-selenium-standalone-service": "0.0.10",
+    "webdriverio": "^4.13.2"
+  }
+}
