@@ -1,0 +1,10 @@
+version: '3'
+services:
+  app:
+    environment:
+      - APP_ID=12345
+    build: .
+  selenium:
+    image: 'selenium/standalone-chrome'
+    expose:
+      - '4444'
