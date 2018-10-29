@@ -16,7 +16,6 @@
     "shelljs": "^0.8.2",
     "wdio-html-format-reporter": "^0.2.9",
     "wdio-jasmine-framework": "^0.3.6",
-    "wdio-selenium-standalone-service": "0.0.10",
     "webdriverio": "^4.13.2"
   }
 }

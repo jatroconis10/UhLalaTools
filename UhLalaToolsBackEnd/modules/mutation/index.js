@@ -81,15 +81,24 @@ router.post('/generateStrykerConf/:testId', function (req, res) {
     });
 });
 
-router.get('/report/:appId', function (req, res) {
-    var appId = req.params.appId;
-    if (shell.test('-e', `tests/e2e/${appId}/reports/wdio-report.html`)) {
-        res.sendFile(path.resolve(`tests/e2e/${appId}/reports/wdio-report.html`));
-    } else {
-        res.status(404).json({
-            message: 'No puede acceder a ese reporte'
-        });
-    }
+router.get('/report/:testId', function (req, res) {
+    var testId = req.params.testId;
+    MutationTest.findById(testId, function (err, test) {
+        if (err || !test) {
+            res.status(404).json({
+                message: 'There isn\'t any test with this id'
+            });
+        } else {
+            var rootDir = path.normalize(test.dir);
+            if (shell.test('-e', `${rootDir}/reports/mutation/html/index.html`)) {
+                shell.exec('reports/mutation/html/index.html', {cwd: rootDir});
+            } else {
+                res.status(404).json({
+                    message: 'No puede acceder a ese reporte'
+                });
+            }
+        }
+    });
 });
 
 router.post('/runTests/:testId', async function (req, res) {

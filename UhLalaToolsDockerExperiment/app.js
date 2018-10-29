@@ -8,6 +8,9 @@ const fs = require('fs');
 const AWS = require('aws-sdk');
 
 (async () => {
+    shell.mkdir('./tests');
+    shell.mkdir('./tests/reports');
+
     const s3 = new AWS.S3({ accessKeyId: process.env.AWS_ACCESS_KEY, secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY });
     const appId = process.env.APP_ID;
 
@@ -30,24 +33,27 @@ const AWS = require('aws-sdk');
 
     const testsDirectory = 'tests'
     const reportsDirectory = './tests/reports';
-    shell.mkdir(reportsDirectory);
     if (shell.test('-d', testsDirectory) && shell.ls(testsDirectory).length !== 0) {
         const wdio = path.normalize('./node_modules/.bin/wdio');
         const conf = path.normalize(`${testsDirectory}/wdio.conf.js`);
 
-        shell.exec(`${wdio} ${conf}`);
-        fs.readdir(reportsDirectory, (_, files) => {
-            if (files) {
-                const reportsFolderPath = path.join(__dirname, reportsDirectory);
-                files.forEach(file => {
-                    const filePath = path.join(reportsFolderPath, file);
-                    if (!fs.lstatSync(filePath).isDirectory()) {
-                        fs.readFile(filePath, (_, fileContent) => {
-                            s3.putObject({ Bucket: process.env.AWS_BUCKET, Key: `tests/${appId}/reports/${file}`, Body: fileContent });
-                        });
-                    }
-                });
-            }
+        shell.exec(`${wdio} ${conf} --host selenium`, function() {
+            console.log('Eeeeeeentra');
+            fs.readdir(reportsDirectory, (_, files) => {
+                if (files) {
+                    console.log(files);
+                    const reportsFolderPath = path.join(__dirname, reportsDirectory);
+                    files.forEach(file => {
+                        const filePath = path.join(reportsFolderPath, file);
+                        if (!fs.lstatSync(filePath).isDirectory()) {
+                            console.log(filePath);
+                            fs.readFile(filePath, (_, fileContent) => {
+                                s3.putObject({ Bucket: process.env.AWS_BUCKET, Key: `tests/${appId}/reports/${file}`, Body: fileContent });
+                            });
+                        }
+                    });
+                }
+            });
         });
     }
 

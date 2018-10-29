@@ -20,8 +20,6 @@ public.testTranslate = function (test) {
             data += `, "${test.files[i]}"`;
         }
         data += `],` + newLine;
-    } else {
-        data += '    files: [],' + newLine;
     }
     if(test.mutate && test.mutate.length > 0) {
         data += `    mutate: ["${test.mutate[0]}"`;
@@ -71,6 +69,7 @@ public.runTests = function(test) {
     var rootDir = path.normalize(test.dir);
     var stryker = path.normalize('node_modules/.bin/stryker');
     shell.exec(`${stryker} run`, {cwd: rootDir});
+    shell.exec('reports/mutation/html/index.html', {cwd: rootDir});
 };
 
 module.exports = public;

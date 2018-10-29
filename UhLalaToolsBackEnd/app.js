@@ -13,7 +13,7 @@ var e2e = require('./modules/e2e');
 var random = require('./modules/random');
 var bdd = require('./modules/bdd');
 var mutation = require('./modules/mutation');
-
+var chaosMonkey = require('./modules/chaosMonkeys');
 
 app.use(bodyParser.json());
 
@@ -286,6 +286,7 @@ app.use('/e2e', e2e);
 app.use('/', random);
 app.use('/', bdd);
 app.use('/mutation', mutation);
+app.use('/chaosMonkeys', chaosMonkey);
 
 mongoose.connection.once('Connected', function () {
     console.log('Database connected');

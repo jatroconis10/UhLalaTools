@@ -113,6 +113,11 @@ router.post('/runScripts/:appId', async function (req, res) {
     }
 });
 
+router.post('/executeTests/:appId', function(req, res) {
+    var appId = req.params.appId;
+    
+});
+
 router.get('/report/:appId', function (req, res) {
     var appId = req.params.appId;
     if (shell.test('-e', `tests/e2e/${appId}/reports/wdio-report.html`)) {
