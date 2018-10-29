@@ -7,7 +7,7 @@ const adb = path.normalize(`${process.env.ANDROID_HOME}/platform-tools/adb`);
 const public = {}
 
 public.runEmulator = (avd) => {
-    shell.exec(`${emulator} -avd ${avd}`, {async: true})
+    shell.exec(`${emulator} -avd ${avd} -no-window`, {async: true})
 }
 
 public.stopEmulator = () => {

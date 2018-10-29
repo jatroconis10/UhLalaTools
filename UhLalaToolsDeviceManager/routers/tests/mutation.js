@@ -50,9 +50,9 @@ router.get('/:appId/mutants/:name', (req, res) => {
 
 router.post('/:appId/mutate', (req, res) => {
     const appId = req.params.appId;
-    let { package } = req.body
+    let { package, gitUrl } = req.body
 
-    mutationUtils.mutate(appId, package)
+    mutationUtils.mutate(appId, package, gitUrl)
         .then(result => console.log('Mutantion finished'))
     res.json({message: 'Mutating ' + package })
 })

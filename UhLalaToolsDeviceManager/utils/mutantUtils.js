@@ -4,6 +4,7 @@ const fs = require('fs');
 
 const emulatorUtils = require('./emulatorUtils');
 const adbUtils = require('./adbUtils');
+const gitUtils = require('./gitUtils');
 
 const apps = path.normalize(`${process.cwd()}/appsSources`);
 const mutants = path.normalize(`${process.cwd()}/mutants`);
@@ -13,13 +14,18 @@ const public = {}
 
 public.getMutants = getMutants
 
-public.mutate = (appId, package) => {
+public.mutate = async (appId, package, repoUrl) => {
     const mutantOutput = path.normalize(`${mutants}/${appId}/mainSources`);
+
+    //If the repo url is given then clone it
+    if(repoUrl) await gitUtils.getSources(appId, repoUrl)
+
     const appMainSources = path.normalize(`${apps}/${appId}/app/src/main`)
     shell.mkdir('-p', mutantOutput);
     const mdroidRun = path.normalize(`java -jar ${mdroid}/MDroidPlus-1.0.0.jar ${mdroid}/libs4ast ${appMainSources} ${package} ${mutantOutput} ${mdroid} true`)
     
-    return execPromise(mdroidRun);
+    const result = await execPromise(mdroidRun);
+    return result;
 }
 
 public.runMutants = async (appId, avds) => {
