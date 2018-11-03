@@ -7,19 +7,47 @@ const multer = require('multer');
 const unzip = require('unzip');
 const fs = require('fs');
 
+const bddUtils = require('../../utils/bddUtils')
+const reportutils = require('../../utils/reportUtils');
+
 const apks = path.normalize(`${process.cwd()}/apks`);
 const tests = path.normalize(`${process.cwd()}/tests`);
 
 var router = express.Router();
 
-router.post('/run', (req, res) => {
-    let {id} = req.body;
+router.get('/:appId/reports', (req, res) => {
+    const appId = req.params.appId;
+
+    let reports = reportutils.getAvailableReports(appId, 'bdd')
+    res.json(reports)
+})
+
+router.get('/:appId/reports/:timestampId', (req, res) => {
+    const { appId, timestampId } = req.params;
+    
+    let report = reportutils.getReport(appId, 'bdd', timestampId)
+    if(!report.error) {
+        res.json(report)
+    } else {
+        res.status(404).json(report.error)
+    }
+})
+
+router.post('/:appId/run', async (req, res) => {
+    let { appId } = req.params;
+    const { avds } = req.body
     res.json({message:'Starting calabash'});
-    shell.cd(`${tests}/${id}`);
-    const install = shell.exec(`bundle install`).code;
-    const calabash = shell.exec(`bundle exec calabash-android run "${apks}/${id}.apk"`).code;
-    shell.cd('../..');
+    await bddUtils.runBDD( { appId } , avds)
+    console.log(`Finsished running bdd tests for app: ${appId}`)
 });
+
+router.get('/:appId/run', (req, res) => {
+    const { appId } = req.params
+
+    const isRunning = bddUtils.getRunningBdd(appId)
+
+    res.json({isRunning: isRunning})
+})
 
 var storage = multer.diskStorage({
     destination: (req, file, cb) => {
