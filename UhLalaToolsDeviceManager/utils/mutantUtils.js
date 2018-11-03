@@ -5,10 +5,13 @@ const fs = require('fs');
 const emulatorUtils = require('./emulatorUtils');
 const adbUtils = require('./adbUtils');
 const gitUtils = require('./gitUtils');
+const reportUtils = require('./reportUtils');
 
 const apps = path.normalize(`${process.cwd()}/appsSources`);
 const mutants = path.normalize(`${process.cwd()}/mutants`);
 const mdroid = path.normalize(`${process.cwd()}/mdroid`);
+
+const runningTasks = {}
 
 const public = {}
 
@@ -29,6 +32,10 @@ public.mutate = async (appId, package, repoUrl) => {
 }
 
 public.runMutants = async (appId, avds) => {
+
+    if (runningTasks[appId] !== undefined) return
+    else runningTasks[appId] = true
+
     shell.cd(process.cwd())
     const results = [];
 
@@ -65,29 +72,13 @@ public.runMutants = async (appId, avds) => {
         results.push(avd_results)
     });
     shell.rm('-rf', baseApp)
-    const reportPath = path.normalize(`${mutants}/${appId}/report.json`)
-    fs.writeFile(reportPath, JSON.stringify(results), function(err) {
-        if(err) {
-            console.log(err);
-        }
 
-        console.log("Mutant report was saved!");
-    }); 
+    const reportPath = reportUtils.createReportDir(appId, 'mutants');
+    reportUtils.writeReport(reportPath, results);
+    
+    delete runningTasks[appId]
+
     return results;
-}
-
-public.getAppReport = (appId) => {
-    const result = {
-        error: undefined,
-        report: undefined
-    }
-    const reportPath = path.normalize(`${mutants}/${appId}/report.json`);
-    if(shell.test('-f', reportPath)) {
-        result.report = JSON.parse(fs.readFileSync(reportPath, 'utf8'));
-    } else {
-        result.error = {message: 'There is no report, maybe the tests are running or you forgot to run them'}
-    }
-    return result;
 }
 
 async function runMutant(mutantPath) {
@@ -111,7 +102,6 @@ function execPromise(command) {
 function getMutants(appId) {
     return shell.ls(path.normalize(`${mutants}/${appId}/mainSources`))
 }
-
 
 async function asyncForEach(array, callback) {
     for (let index = 0; index < array.length; index++) {
