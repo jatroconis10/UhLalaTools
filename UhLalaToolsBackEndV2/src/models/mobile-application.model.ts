@@ -2,7 +2,6 @@ import { Schema, Model, model, Document } from 'mongoose';
 import { IApplication } from './application.model';
 
 export interface IMobileApplication extends Document {
-  _id: string;
   application: IApplication;
   url: string;
 }

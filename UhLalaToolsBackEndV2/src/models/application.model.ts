@@ -1,7 +1,6 @@
 import { Schema, Model, model, Document } from 'mongoose';
 
 export interface IApplication extends Document {
-  _id: string;
   name: string;
   description?: string;
 }
