@@ -1,14 +1,16 @@
 import { Request, Response } from 'express';
-import { Application } from '../models';
 import { Types } from 'mongoose';
+
+import { Application } from '../models';
 
 export class ApplicationsController {
   public static getApplications(_: Request, res: Response) {
     Application.find({}, ((err, applications) => {
       if (err) {
         res.send(err);
+      } else {
+        res.json(applications);
       }
-      res.json(applications);
     }));
   }
 

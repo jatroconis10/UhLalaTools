@@ -1,18 +1,28 @@
 import { Request, Response } from 'express';
+import { Types } from 'mongoose';
 
 import { WebApplication } from '../models';
 
 export class WebApplicationsController {
-  public static getWebApplications(_: Request, res: Response) {
-    res.json({
-      message: 'get web applications'
-    });
+  public static getWebApplications(req: Request, res: Response) {
+    WebApplication.find(req.query, ((err, webApplications) => {
+      if (err) {
+        res.send(err);
+      } else {
+        res.json(webApplications);
+      }
+    }));
   }
 
-  public static getWebApplication(_: Request, res: Response) {
-    res.json({
-      message: 'get web application'
-    });
+  public static getWebApplication(req: Request, res: Response) {
+    const id = Types.ObjectId(req.params.id);
+    WebApplication.findById(id, ((err, webApplication) => {
+      if (err) {
+        res.send(err);
+      } else {
+        res.json(webApplication);
+      }
+    }));
   }
 
   public static createWebApplication(req: Request, res: Response) {
@@ -20,8 +30,9 @@ export class WebApplicationsController {
     webApplication.save((err, webApplication) => {
       if (err) {
         res.send(err);
+      } else {
+        res.json(webApplication);
       }
-      res.json(webApplication);
     });
   }
 }
