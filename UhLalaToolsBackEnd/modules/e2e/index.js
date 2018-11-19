@@ -46,7 +46,7 @@ router.delete('/:testId', function (req, res) {
     });
 });
 
-router.get('/getScript/:testId', function (req, res) {
+router.get('/getScript/:testId/:version', function (req, res) {
     var id = req.params.testId;
     E2ETest.findById(id, function (err, test) {
         if (err || !test) {
@@ -58,7 +58,7 @@ router.get('/getScript/:testId', function (req, res) {
                 E2ETest.find({
                     application: new ObjectId(test.application)
                 }).then((tests) => {
-                    scriptManager.testsToScripts(test.application, tests);
+                    scriptManager.testsToScripts(test.application, tests, req.params.version);
                     res.download(scriptManager.getTestScriptPath(test));
                 });
             } else {
@@ -81,14 +81,14 @@ router.get('/getReport/:testId', function (req, res) {
     });
 });
 
-router.post('/generateScripts/:appId', function (req, res) {
+router.post('/generateScripts/:appId/:version', function (req, res) {
     var appId = req.params.appId;
     E2ETest.find({
             application: new ObjectId(appId)
         })
         .then((tests) => {
             if (tests.length != 0) {
-                scriptManager.testsToScripts(appId, tests);
+                scriptManager.testsToScripts(appId, tests, req.params.version);
                 res.json({
                     message: "Scripts generados"
                 });
