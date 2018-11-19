@@ -1,6 +1,7 @@
 .android/*
 !.android/devices.xml
 /tests
+/reports
 apks
 mutants
 appsSources

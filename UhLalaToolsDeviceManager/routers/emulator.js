@@ -4,6 +4,8 @@ const express = require('express');
 const shell = require('shelljs');
 const path = require('path');
 
+const emulatorUtils = require('../utils/emulatorUtils');
+
 const emulator = path.normalize(`${process.env.ANDROID_HOME}/emulator/emulator`);
 const adb = path.normalize(`${process.env.ANDROID_HOME}/platform-tools/adb`);
 
@@ -11,32 +13,25 @@ var router = express.Router();
 var emulatorRunning = false;
 
 router.post('/run', (req, res) => {
-    if (emulatorRunning) return res.status(401).json({
-        error: 'Emulator already running'
-    });
     const {
         avd
     } = req.body;
-    res.json({
-        message: 'Starting emulator'
-    });
-    shell.exec(`${emulator} -avd ${avd}`, (code) => {
-        console.log(`Finished emulator with code: ${code}`);
-        emulatorRunning = false;
-    });
-    emulatorRunning = true;
+    const result = emulatorUtils.runEmulator(avd)
+    if (result.error) {
+        res.status(500).json({error: result.error})
+    } else {
+        res.json({serial:result.serial})
+    }
 });
 
 router.post('/stop', (req, res) => {
-    if (!emulatorRunning) {
-        res.status(404).json({
-            error: 'There is no emulator running'
-        });
+    const { avd } = req.body;
+
+    const result = emulatorUtils.stopEmulator(avd);
+    if (result.error) {
+        res.status(500).json({error: result.error})
     } else {
-        shell.exec(`${adb} emu kill`);
-        res.json({
-            message: 'Stopped the emulator'
-        });
+        res.json({serial:result.serial})
     }
 });
 

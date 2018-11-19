@@ -45,7 +45,7 @@ router.post('/', function(req, res) {
         if (err) {
             return res.status(500).send(err);
         } else {
-            return res.status(500).send(savedChaosMonkeyConfiguration);
+            res.json(savedChaosMonkeyConfiguration);
         }
     });
 });

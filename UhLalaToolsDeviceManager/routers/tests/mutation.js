@@ -9,6 +9,7 @@ const archiver = require('archiver');
 const fs = require('fs');
 
 const mutationUtils = require('../../utils/mutantUtils');
+const reportutils = require('../../utils/reportUtils');
 
 const apps = path.normalize(`${process.cwd()}/appsSources`);
 const mutants = path.normalize(`${process.cwd()}/mutants`);
@@ -22,14 +23,21 @@ router.get('/:appId/mutants', (req, res) => {
     res.json(currentMutants)
 })
 
-router.get('/:appId/report', (req, res) => {
+router.get('/:appId/reports', (req, res) => {
     const appId = req.params.appId;
+
+    let reports = reportutils.getAvailableReports(appId, 'mutants')
+    res.json(reports)
+})
+
+router.get('/:appId/reports/:timestampId', (req, res) => {
+    const { appId, timestampId } = req.params;
     
-    let report = mutationUtils.getAppReport(appId);
-    if (report.error) {
-        res.status(404).json(report.error)
-    } else {
+    let report = reportutils.getReport(appId, 'mutants', timestampId)
+    if(!report.error) {
         res.json(report)
+    } else {
+        res.status(404).json(report.error)
     }
 })
 
@@ -50,9 +58,9 @@ router.get('/:appId/mutants/:name', (req, res) => {
 
 router.post('/:appId/mutate', (req, res) => {
     const appId = req.params.appId;
-    let { package } = req.body
+    let { package, gitUrl } = req.body
 
-    mutationUtils.mutate(appId, package)
+    mutationUtils.mutate(appId, package, gitUrl)
         .then(result => console.log('Mutantion finished'))
     res.json({message: 'Mutating ' + package })
 })
