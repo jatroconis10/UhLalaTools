@@ -276,8 +276,14 @@ app.get('/vrt/compare/:applicationId/:version1/:version2', async function(req, r
     }, function (error, tests) {
         if (error) return res.status(500).send(error);
         if(!shell.test('-d', `tests/e2e/${req.params.applicationId}/screenshots/${tests[0]._id}/${req.params.version1}`)) return res.status(500).send(`No existen registros para la version ${req.params.version1}`);
-            if(!shell.test('-d', `tests/e2e/${req.params.applicationId}/screenshots/${tests[0]._id}/${req.params.version2}`)) return res.status(500).send(`No existen registros para la version ${req.params.version2}`);
+        if(!shell.test('-d', `tests/e2e/${req.params.applicationId}/screenshots/${tests[0]._id}/${req.params.version2}`)) return res.status(500).send(`No existen registros para la version ${req.params.version2}`);
         var comp = [];
+        var newLine = '\n';
+        var html = `<h1>VRT Report versions ${req.params.version1} & ${req.params.version2}</h1>` + newLine;
+        html+='<br><table>' + newLine;
+        html+=`<tr><th>Versión ${req.params.version1}</th><th>Versión ${req.params.version2}</th><th>Diferences</th><th>Important information</th></tr>` + newLine;
+        
+        
         tests.forEach(test=>{
             for(var i = 0; i < test.commands.length; i++) {
                 var diff = resemble(`tests/e2e/${req.params.applicationId}/screenshots/${test._id}/${req.params.version1}/test${i}.png`)
@@ -287,11 +293,19 @@ app.get('/vrt/compare/:applicationId/:version1/:version2', async function(req, r
                     console.log(data);
                     text = data;
                     img = data.getImageDataUrl();
-                    comp.push({test: test._id, data: text, image: img});
+                    html+='<tr>' + newLine;
+                    html+=`<td><img src="../screenshots/${test._id}/${req.params.version1}/test${i}.png" style="height: 174px; width: 272px"></td>` + newLine;
+                    html+=`<td><img src="../screenshots/${test._id}/${req.params.version2}/test${i}.png" style="height: 174px; width: 272px"></td>` + newLine;
+                    html+='<td><img src="'+img+'" style="height: 174px; width: 272px"></td>' + newLine;
+                    html+=`<td><h4>test: ${test._id}<br> command: ${commandToWebDriver(test.commands[i])}<br> misMatchPercentage: `+text.misMatchPercentage+'<br>isSameDimensions:'+text.isSameDimensions+'<br>dimensionDifference:{width:'+text.dimensionDifference.width+', height:'+text.dimensionDifference.height+'}</h4></td>' + newLine;
+                    html+='</tr>' + newLine;
                 });
             }
         });
-        res.json(comp);
+        html+='</table>';
+        if(!shell.test('-d', `tests/e2e/${req.params.applicationId}/reports`)) shell.mkdir('-p', dir);
+        fs.writeFileSync(`tests/e2e/${req.params.applicationId}/reports/vrt-report-versions-${req.params.version1}-${req.params.version2}.html`, html);
+        res.json('Reporte generado');
     });    
 });
 
@@ -323,6 +337,36 @@ function convertToCSV(objArray) {
     }
 
     return str;
+}
+
+function commandToWebDriver(command) {
+    var result = '';
+    switch (command.type) {
+        case 'goTo':
+            result = `browser.url('${command.selector}')`;
+            break;
+        case 'click':
+            result = `browser.click('${command.selector}')`;
+            break;
+        case 'keys':
+            result = `$('${command.selector}').keys('${command.value}')`;
+            break;
+        case 'selectByText':
+            result = `browser.selectByVisibleText('${command.selector}', '${command.value}')`;
+            break;
+        case 'waitVisible':
+            var timeout = command.value || 500;
+            result = `browser.waitForVisible('${command.selector}', ${timeout})`;
+            break;
+        case 'assertExists':
+            result = `expect($('${command.selector}')).toBeDefined()`;
+            break;
+        case 'assertTextMatches':
+            var getText = `$('${command.selector}').getText()`;
+            result = `expect(${getText}).toBe('${command.value}')`;
+            break;
+    }
+    return result;
 }
 
 app.use('/e2e', e2e);
