@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import { Types } from 'mongoose';
 
+import { throwError } from './utils';
+
 import { Application } from '../models';
 
 export class ApplicationsController {
@@ -15,6 +17,11 @@ export class ApplicationsController {
     const id = Types.ObjectId(req.params.id);
     Application.findById(id, ((err, application) => {
       if (err) return next(err);
+      if (!application) {
+        const error: any = new Error('Application not found');
+        error.httpStatusCode = 404;
+        return next(error);
+      }
       res.json(application);
     }));
   }

@@ -1,10 +1,9 @@
 import express, { Request, Response } from 'express';
 import bodyParser from 'body-parser';
-import methodOverride from 'method-override';
 import mongoose from 'mongoose';
 import cors from 'cors';
 
-import { applicationsRouter, webApplicationsRouter, versionsRouter } from './routes';
+import { applicationsRouter, webApplicationsRouter, e2eTestsRouter } from './routes';
 import { NextFunction } from 'connect';
 
 const app: express.Application = express();
@@ -17,7 +16,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use('/applications', applicationsRouter);
 app.use('/web-applications', webApplicationsRouter);
-app.use('/versions', versionsRouter);
+app.use('/e2e-tests', e2eTestsRouter);
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   console.error(err);
@@ -27,5 +26,5 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
 });
 
 app.listen(port, () => {
-    console.log(`Listening at http://localhost:${port}/`);
+  console.log(`Listening at http://localhost:${port}/`);
 });
