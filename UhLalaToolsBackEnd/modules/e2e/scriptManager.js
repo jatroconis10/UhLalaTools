@@ -18,11 +18,11 @@ public.getTestReportPath = function(test) {
     return `tests/e2e/${test.application}/reports/wdio-report.html`;
 }
 
-public.testsToScripts = function(appId, tests) {
+public.testsToScripts = function(appId, tests, version) {
     createTestsDirs(appId);
     config.writeConfig(appId);
     tests.forEach(test => {
-        testTranslate(appId, test);
+        testTranslate(appId, test, version);
         test.generated = true;
         test.save();
     });
@@ -57,9 +57,12 @@ public.runScripts = async function(appId) {
     }
 }
 
-var testTranslate = function(appId, test) {
+var testTranslate = function(appId, test, version) {
     var resultFile = {};
     resultFile.name = test.name;
+
+    var dir = `tests/e2e/${appId}/screenshots/${test.id}/${version}`;
+    shell.mkdir('-p', dir);
 
     var data = "var assert = require('assert');" + newLine;
 
@@ -68,10 +71,11 @@ var testTranslate = function(appId, test) {
     data += `${tab}it('${test.description}', function() {${newLine}`;
 
     //Translate the statements into actual tests
-    test.commands.forEach(command => {
-       data += tab + tab + commandToWebDriver(command); 
-    });
-
+    for(var i = 0; i < test.commands.length; i++){
+       data += tab + tab + commandToWebDriver(test.commands[i]) + newLine;
+       data += `${tab}${tab}browser.saveScreenshot('${dir}/test${i}.png')` + newLine;
+    }
+    
     data += `${tab}})` + newLine;
 
     data += '})';

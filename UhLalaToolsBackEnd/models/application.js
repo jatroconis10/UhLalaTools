@@ -19,6 +19,7 @@ var applicationSchema = new Schema({
         type: Boolean,
         default: false
     },
+    git: String,
     windowWidth: Number,
     windowHeight: Number
 });
