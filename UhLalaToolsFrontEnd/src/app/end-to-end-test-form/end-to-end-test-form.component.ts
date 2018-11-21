@@ -34,6 +34,7 @@ export class EndToEndTestFormComponent implements OnInit {
   }
 
   onSubmit() {
+    console.log(JSON.stringify(this.newEndToEndTest));
     this.endToEndTestService.createEndToEndTest(this.application._id, this.newEndToEndTest).subscribe(
       () => this.router.navigate([`applications/${this.application._id}`])
     );

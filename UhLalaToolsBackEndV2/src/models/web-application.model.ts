@@ -1,16 +1,15 @@
-import { Document } from 'mongoose';
-import { Schema } from 'mongoose';
-import { Application } from './application.model';
+import { Schema, Model, model, Document } from 'mongoose';
+import { IApplication } from './application.model';
 
-export const WebApplicationSchema: Schema = new Schema({
-  name: { type: String, required: true },
-  platform: { type: String, required: true },
-  description: String,
-  url: { type: String, required: true }
-});
-
-export interface WebApplication extends Application, Document {
+export interface IWebApplication extends Document {
+  application: IApplication;
   url: string;
 }
 
+export const WebApplicationSchema: Schema = new Schema({
+  application: { type: Schema.Types.ObjectId, ref: 'Application', required: true },
+  url: { type: String, required: true },
+});
 
+export const WebApplication: Model<IWebApplication> =
+  model<IWebApplication>('WebApplication', WebApplicationSchema);

@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { WebApplicationsController } from '../controllers/web-applications/web-applications.controller';
+import { WebApplicationsController } from '../controllers';
 
 const router: Router = Router();
 

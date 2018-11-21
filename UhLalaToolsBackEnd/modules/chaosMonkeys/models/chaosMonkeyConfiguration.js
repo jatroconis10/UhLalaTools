@@ -6,7 +6,8 @@ var chaosMonkeyConfigurationSchema = new Schema({
     autoScalingGroup: { type: String, required: true },
     awsAccessKey: { type: String, required: true },
     awsSecretAccessKey: { type: String, required: true },
-    awsRegion: { type: String, required: true }
+    awsRegion: { type: String, required: true },
+    notificationEmail: { type: String, required: true }
 });
 
 module.exports = mongoose.model('ChaosMonkeyConfiguration', chaosMonkeyConfigurationSchema);
