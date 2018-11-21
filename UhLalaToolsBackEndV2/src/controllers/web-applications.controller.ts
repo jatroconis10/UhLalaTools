@@ -2,7 +2,6 @@ import { Request, Response, NextFunction } from 'express';
 import { Types } from 'mongoose';
 
 import { WebApplication } from '../models';
-import { throwError } from './utils';
 
 export class WebApplicationsController {
   public static getWebApplications(req: Request, res: Response, next: NextFunction) {

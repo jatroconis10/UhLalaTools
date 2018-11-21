@@ -1,9 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { Types } from 'mongoose';
 
-import { throwError } from './utils';
-
-import { Application } from '../models';
+import { Application, WebApplication, MobileApplication } from '../models';
 
 export class ApplicationsController {
   public static getApplications(_: Request, res: Response, next: NextFunction) {
@@ -23,6 +21,22 @@ export class ApplicationsController {
         return next(error);
       }
       res.json(application);
+    }));
+  }
+
+  public static getWebApplicationFromApplication(req: Request, res: Response, next: NextFunction) {
+    const id = Types.ObjectId(req.params.id);
+    WebApplication.findOne({ application: id }, ((err, webApplication) => {
+      if (err) return next(err);
+      res.json(webApplication);
+    }));
+  }
+
+  public static getMobileApplicationFromApplication(req: Request, res: Response, next: NextFunction) {
+    const id = Types.ObjectId(req.params.id);
+    MobileApplication.findOne({ application: id }, ((err, mobileApplication) => {
+      if (err) return next(err);
+      res.json(mobileApplication);
     }));
   }
 
