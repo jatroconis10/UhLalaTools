@@ -6,8 +6,8 @@ const reports = path.normalize(`${process.cwd()}/reports`);
 
 const public = {}
 
-public.createReportDir = (appId, type) => {
-    const reportDir = path.normalize(`${reports}/${appId}/${type}/${Date.now()}`);
+public.createReportDir = (appId, version, type) => {
+    const reportDir = path.normalize(`${reports}/${appId}/${version}/${type}/${Date.now()}`);
     shell.mkdir('-p', reportDir);
     shell.mkdir('-p', path.join(reportDir, 'screenshots'))
     return reportDir;
@@ -26,16 +26,16 @@ public.writeReport = (dir, report) => {
     });
 }
 
-public.getAvailableReports = (appId, type) => {
-    return shell.ls(path.normalize(`${reports}/${appId}/${type}`))
+public.getAvailableReports = (appId, version, type) => {
+    return shell.ls(path.normalize(`${reports}/${appId}/${version}/${type}`))
 }
 
-public.getReport = (appId, type, timestampId) => {
+public.getReport = (appId, version, type, timestampId) => {
     const result = {
         error: undefined,
         report: undefined
     }
-    const reportPath = path.normalize(`${reports}/${appId}/${type}/${timestampId}/report.json`);
+    const reportPath = path.normalize(`${reports}/${appId}/${version}/${type}/${timestampId}/report.json`);
     if(shell.test('-f', reportPath)) {
         result.report = JSON.parse(fs.readFileSync(reportPath, 'utf8'));
     } else {

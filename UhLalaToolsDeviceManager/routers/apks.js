@@ -19,9 +19,14 @@ router.get('/', (req, res) => {
 });
 
 var storage = multer.diskStorage({
-    destination: apks,
+    destination: function (req, file, cb) {
+        const { appId } = req.params
+        const apkDir = path.normalize(`${apks}/${appId}`);
+        shell.mkdir('-p', apkDir);
+        cb(null, apkDir)
+      },
     filename: function (req, file, cb) {
-        cb(null, `${req.params.appId}.apk`);
+        cb(null, `${req.params.version}.apk`);
     }
 });
 
@@ -29,7 +34,7 @@ var upload = multer({
     storage: storage
 });
 
-router.post('/:appId', upload.single('apk'), (req, res) => {
+router.post('/:appId/version/:version', upload.single('apk'), (req, res) => {
     res.send('File uploaded');
 });
 
