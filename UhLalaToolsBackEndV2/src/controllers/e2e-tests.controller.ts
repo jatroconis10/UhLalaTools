@@ -1,9 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
 import { Types } from 'mongoose';
+import shelljs from 'shelljs';
+import path from 'path';
 
 import { throwError } from './utils';
 
 import { E2ETest, WebApplication, E2ETestUtils } from '../models';
+import { ScriptManager } from '../models';
 
 export class E2ETestsController {
   public static getE2ETests(req: Request, res: Response, next: NextFunction) {
@@ -51,8 +54,22 @@ export class E2ETestsController {
     });
   }
 
-  public static executeE2ETest(req: Request, res: Response, next: NextFunction) {
+  public static executeE2ETests(req: Request, res: Response, next: NextFunction) {
+    if (!req.params.webApplicationId) return next({ message: 'Web application not specified' });
+    const webApplicationId = req.params.webApplicationId;
+    res.json({ message: ScriptManager.executeE2ETests(webApplicationId) });
+  }
 
+  static downloadE2ETestsReport(req: Request, res: Response, next: NextFunction) {
+    const webApplicationId = req.query.webApplication;
+    if (!webApplicationId) return next({ message: 'Web application not specified' });
+    if (shelljs.test('-e', `tests/e2e/${webApplicationId}/reports/wdio-report.html`)) {
+      res.sendFile(path.resolve(`tests/e2e/${webApplicationId}/reports/wdio-report.html`));
+    } else {
+      res.status(500).json({
+        message: 'Error trying to download the reports'
+      });
+    }
   }
 
   public static createE2ETest(req: Request, res: Response, next: NextFunction) {

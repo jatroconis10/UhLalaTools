@@ -38,7 +38,7 @@ export class WebdriverManager {
       reporters: ['dot', 'html-format'],
       reporterOptions: {
         htmlFormat: {
-          outputDir: `./tests/e2e/${webApplication._id}/reports/`
+          outputDir: `./tests/e2e/${webApplication._id}/reports`
         },
       },
       jasmineNodeOpts: {

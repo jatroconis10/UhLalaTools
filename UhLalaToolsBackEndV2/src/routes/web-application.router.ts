@@ -12,4 +12,6 @@ router.post('/', WebApplicationsController.createWebApplication);
 
 router.patch('/:webApplicationId/e2e-tests/generate-scripts', E2ETestsController.generateE2ETestsScript);
 
+router.patch('/:webApplicationId/e2e-tests/execute-scripts', E2ETestsController.executeE2ETests);
+
 export const webApplicationsRouter: Router = router;

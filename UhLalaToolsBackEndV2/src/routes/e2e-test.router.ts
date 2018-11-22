@@ -6,6 +6,8 @@ const router: Router = Router();
 
 router.get('/', E2ETestsController.getE2ETests);
 
+router.get('/reports', E2ETestsController.downloadE2ETestsReport);
+
 router.get('/:id', E2ETestsController.getE2ETest);
 
 router.post('/', E2ETestsController.createE2ETest);

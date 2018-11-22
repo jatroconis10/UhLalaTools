@@ -1,7 +1,8 @@
 import shelljs from 'shelljs';
 import fs from 'fs';
+import path from 'path';
 
-import { IE2ETest } from '.';
+import { E2ETest, IE2ETest } from '.';
 
 const newLine = '\n';
 const tab = '\t';
@@ -11,6 +12,29 @@ export class ScriptManager {
     const dir = `tests/e2e/${applicationId}`;
     const dirs = [`${dir}/scripts`, `${dir}/reports`];
     shelljs.mkdir('-p', dirs);
+  }
+
+  static executeE2ETests(webApplicationId: string) {
+    const dir = `tests/e2e/${webApplicationId}`;
+
+    if (shelljs.test('-d', dir) && shelljs.ls(dir + '/scripts').length !== 0) {
+      const wdio = path.normalize('./node_modules/.bin/wdio');
+      const conf = path.normalize(`${dir}/wdio.conf.js`);
+
+      shelljs.exec(`${wdio} ${conf}`, (code, stdout, stderr) => {
+        if (code) {
+          E2ETest.find({ webApplication: webApplicationId }).then((tests) => {
+            tests.forEach((test) => {
+              test.executed = true;
+              test.save();
+            });
+          });
+        }
+      });
+      return 'E2E Tests scripts queued for execution';
+    } else {
+      return 'Could not find any E2E test script for execution';
+    }
   }
 
   static generateE2ETestScript(e2eTest: IE2ETest, version: string) {
