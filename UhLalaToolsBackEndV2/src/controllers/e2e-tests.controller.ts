@@ -3,7 +3,7 @@ import { Types } from 'mongoose';
 
 import { throwError } from './utils';
 
-import { E2ETest, WebApplication } from '../models';
+import { E2ETest, WebApplication, E2ETestUtils } from '../models';
 
 export class E2ETestsController {
   public static getE2ETests(req: Request, res: Response, next: NextFunction) {
@@ -29,8 +29,26 @@ export class E2ETestsController {
 
   }
 
-  public static generateE2ETestScript(req: Request, res: Response, next: NextFunction) {
-
+  public static generateE2ETestsScript(req: Request, res: Response, next: NextFunction) {
+    const webApplicationId = Types.ObjectId(req.params.webApplicationId);
+    const version = req.body.version;
+    if (!version) {
+      const error: any = new Error('Version not specified');
+      error.httpStatusCode = 400;
+      return next(error);
+    }
+    E2ETest.find({
+      webApplication: webApplicationId
+    }, (err, e2eTests) => {
+      if (err) return next(err);
+      if (e2eTests.length == 0) {
+        const error: any = new Error('There are no E2E Tests for the web application');
+        error.httpStatusCode = 404;
+        return next(error);
+      }
+      E2ETestUtils.generateE2ETestsScripts(e2eTests, version);
+      res.json({ message: 'E2E Tests scripts generated' });
+    });
   }
 
   public static executeE2ETest(req: Request, res: Response, next: NextFunction) {
