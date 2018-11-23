@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { Types } from 'mongoose';
 
-import { RandomTest, WebApplication, RandomTestUtils } from '../models';
+import { RandomTest, WebApplication, RandomTestUtils, RandomTestError } from '../models';
 import { throwError } from './utils';
 
 export class RandomTestsController {
@@ -42,12 +42,14 @@ export class RandomTestsController {
   }
 
   private static sanitizedRandomTestParams(randomTestParams: any) {
-    if (randomTestParams.timeToLive && randomTestParams.timeToLive > 50000) {
+    if (randomTestParams.timeToLive <= 0 || randomTestParams.numRuns <= 0 || randomTestParams.numGremlins <= 0) {
+      throwError(400, 'No value can be negative or 0');
+    } else if (randomTestParams.timeToLive > 50000) {
       throwError(400, 'Maximum time to live is 50000');
-    } else if (randomTestParams.numRuns && randomTestParams.numRuns > 10) {
+    } else if (randomTestParams.numRuns > 10) {
       throwError(400, 'Maximum number of runs is 10');
-    } else if (randomTestParams.numRuns && randomTestParams.numRuns > 500) {
-      throwError(400, 'Maximum number of runs is 500');
+    } else if (randomTestParams.numGremlins > 500) {
+      throwError(400, 'Maximum number of gremlins is 500');
     }
     return {
       webApplication: randomTestParams.webApplication,
@@ -84,6 +86,22 @@ export class RandomTestsController {
       if (err) next(err);
       RandomTestUtils.executeRandomTest(randomTest);
       res.json({ message: 'Random test execution queued' });
+    });
+  }
+
+  static getRandomTestErrors(req: Request, res: Response, next: NextFunction) {
+    const id = Types.ObjectId(req.params.id);
+    RandomTest.findById(id, (err, randomTest) => {
+      if (err) next(err);
+      if (!randomTest) {
+        const error: any = new Error('Random test not found');
+        error.httpStatusCode = 404;
+        next(error);
+      }
+      RandomTestError.find({ randomTest: randomTest._id }, (err, randomTestErrors) => {
+        if (err) next(err);
+        res.json(randomTestErrors);
+      });
     });
   }
 }

@@ -6,6 +6,7 @@ import { E2ETest, IE2ETest, IWebApplication } from '.';
 import { IRandomTest } from './random-test.model';
 import { throwError } from '../controllers';
 import { WebdriverManager } from './webdriver-manager';
+import { RandomTestError } from './random-test-error.model';
 
 const newLine = '\n';
 const tab = '\t';
@@ -106,12 +107,16 @@ export class ScriptManager {
     if (shelljs.test('-d', dir) && shelljs.ls(dir + '/scripts').length !== 0) {
       const dir1 = path.normalize('./node_modules/.bin/wdio');
       const dir2 = path.normalize(`${dir}/wdio.conf.js`);
-      shelljs.exec(`${dir1} ${dir2}`, function (code) {
-        if (code) {
-          randomTest.executed = true;
-          randomTest.save();
-        }
-      });
+      for (let i = 0; i < randomTest.numRuns; i++) {
+        shelljs.exec(`${dir1} ${dir2}`, function (code, stdout) {
+          if (code === 0) {
+            randomTest.executed = true;
+            randomTest.save();
+          } else {
+            new RandomTestError({ randomTest: randomTest._id, error: stdout }).save();
+          }
+        });
+      }
     } else {
       throwError(404, 'There are no random test to execute');
     }

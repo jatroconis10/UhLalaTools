@@ -10,6 +10,8 @@ router.get('/by-web-application/:webApplication', RandomTestsController.getRando
 
 router.get('/:id', RandomTestsController.getRandomTest);
 
+router.get('/:id/errors', RandomTestsController.getRandomTestErrors);
+
 router.patch('/:id/generate-script', RandomTestsController.generateRandomTestScript);
 
 router.patch('/:id/execute', RandomTestsController.executeRandomTest);
