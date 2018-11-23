@@ -2,7 +2,10 @@ import shelljs from 'shelljs';
 import fs from 'fs';
 import path from 'path';
 
-import { E2ETest, IE2ETest } from '.';
+import { E2ETest, IE2ETest, IWebApplication } from '.';
+import { IRandomTest } from './random-test.model';
+import { throwError } from '../controllers';
+import { WebdriverManager } from './webdriver-manager';
 
 const newLine = '\n';
 const tab = '\t';
@@ -34,6 +37,83 @@ export class ScriptManager {
       return 'E2E Tests scripts queued for execution';
     } else {
       return 'Could not find any E2E test script for execution';
+    }
+  }
+
+  static generateRandomTestScript(webApplication: IWebApplication, randomTest: IRandomTest) {
+    ScriptManager.createRandomTestFolder(randomTest);
+
+    const jsonConfiguration = JSON.stringify(
+      WebdriverManager.getRandomTestWebdriverConfiguration(webApplication, randomTest)
+    );
+    const configurationFileContent = `exports.config = ${jsonConfiguration}`;
+    fs.writeFileSync(`tests/random/${randomTest._id}/wdio.conf.js`, configurationFileContent);
+
+    const data = `
+      function loadScript(callback) {
+        var s = document.createElement('script');
+        s.src = 'https://rawgithub.com/marmelab/gremlins.js/master/gremlins.min.js';
+        if (s.addEventListener) {
+          s.addEventListener('load', callback, false);
+        } else if (s.readyState) {
+          s.onreadystatechange = callback;
+        }
+        document.body.appendChild(s);
+      }
+
+      function unleashGremlins(ttl, callback) {
+        function stop() {
+          horde.stop();
+          callback();
+        }
+
+        var horde = window.gremlins.createHorde();
+        horde.seed(${randomTest.seed});
+        horde.after(callback);
+        window.onbeforeunload = stop;
+        setTimeout(stop, ttl);
+        horde.unleash({ nb: ${randomTest.numGremlins} });
+      }
+
+      describe('${webApplication.url} with gremlins', function () {
+        it('should survive the attack', function () {
+          browser.url('${webApplication.url}');
+          browser.timeoutsAsyncScript(60000);
+          browser.executeAsync(loadScript);
+          browser.timeoutsAsyncScript(60000);
+          browser.executeAsync(unleashGremlins, ${randomTest.timeToLive});
+        });
+
+        afterAll(function() {
+          browser.log('browser').value.forEach(function(log) {
+            browser.logger.info(log.message.split(' ')[2]);
+          });
+        });
+      });
+    `;
+
+    fs.writeFileSync(`tests/random/${randomTest._id}/scripts/${randomTest._id}.spec.js`, data);
+  }
+
+  private static createRandomTestFolder(randomTest: IRandomTest) {
+    const dir = `tests/random/${randomTest._id}`;
+    const dirs = [`${dir}/scripts`, `${dir}/reports`];
+    shelljs.mkdir('-p', dirs);
+  }
+
+  static executeRandomTest(randomTest: IRandomTest) {
+    const dir = `tests/random/${randomTest._id}`;
+    if (shelljs.test('-d', dir) && shelljs.ls(dir + '/scripts').length !== 0) {
+      const dir1 = path.normalize('./node_modules/.bin/wdio');
+      const dir2 = path.normalize(`${dir}/wdio.conf.js`);
+      shelljs.exec(`${dir1} ${dir2}`, function (code) {
+        if (code) {
+          randomTest.executed = true;
+          randomTest.save();
+        }
+      });
+    } else {
+      throwError(404, 'There are no random test to execute');
     }
   }
 

@@ -1,6 +1,7 @@
 import fs from 'fs';
 
 import { IWebApplication } from './web-application.model';
+import { IRandomTest } from './random-test.model';
 
 export class WebdriverManager {
   static writeE2ETestsWebdriverConfiguration(webApplication: IWebApplication) {
@@ -43,6 +44,37 @@ export class WebdriverManager {
       },
       jasmineNodeOpts: {
         defaultTimeoutInterval: 20000,
+      }
+    };
+  }
+
+  static getRandomTestWebdriverConfiguration(webApplication: IWebApplication, randomTest: IRandomTest): any {
+    return {
+      specs: ['./tests/random/' + randomTest._id + '/scripts/*.js'],
+      exclude: [],
+      maxInstances: 10,
+      capabilities: [{
+        maxInstances: 5,
+        browserName: 'chrome',
+        chromeOptions: {
+          args: ['--headless', '--disable-gpu', '--window-size=1980,1080']
+        },
+      }],
+      sync: true,
+      logLevel: 'verbose',
+      coloredLogs: true,
+      bail: 0,
+      screenshotPath: './errorShots/',
+      baseUrl: webApplication.url,
+      waitforTimeout: 10000,
+      connectionRetryTimeout: 90000,
+      connectionRetryCount: 3,
+      services: ['selenium-standalone'],
+      framework: 'jasmine',
+      reporters: ['dot'],
+      jasmineNodeOpts: {
+        defaultTimeoutInterval: 80000,
+        expectationResultHandler: function () { }
       }
     };
   }
