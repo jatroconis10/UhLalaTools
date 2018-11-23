@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { Types } from 'mongoose';
 
-import { WebApplication } from '../models';
+import { WebApplication, DEFAULT_CAPABILITIES } from '../models';
 
 export class WebApplicationsController {
   public static getWebApplications(req: Request, res: Response, next: NextFunction) {
@@ -25,10 +25,18 @@ export class WebApplicationsController {
   }
 
   public static createWebApplication(req: Request, res: Response, next: NextFunction) {
-    const webApplication = new WebApplication(req.body);
+    const webApplication = new WebApplication(WebApplicationsController.sanitizedWebApplicationParams(req.body));
     webApplication.save((err, webApplication) => {
       if (err) return next(err);
       res.json(webApplication);
     });
+  }
+
+  private static sanitizedWebApplicationParams(webApplicationParams: any) {
+    return {
+      application: webApplicationParams.application,
+      url: webApplicationParams.url,
+      browserCapabilities: webApplicationParams.browserCapabilities || DEFAULT_CAPABILITIES
+    };
   }
 }

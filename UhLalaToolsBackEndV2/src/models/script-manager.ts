@@ -109,12 +109,11 @@ export class ScriptManager {
       const dir2 = path.normalize(`${dir}/wdio.conf.js`);
       for (let i = 0; i < randomTest.numRuns; i++) {
         shelljs.exec(`${dir1} ${dir2}`, function (code, stdout) {
-          if (code === 0) {
-            randomTest.executed = true;
-            randomTest.save();
-          } else {
+          if (code !== 0) {
             new RandomTestError({ randomTest: randomTest._id, error: stdout }).save();
           }
+          randomTest.executed = true;
+          randomTest.save();
         });
       }
     } else {

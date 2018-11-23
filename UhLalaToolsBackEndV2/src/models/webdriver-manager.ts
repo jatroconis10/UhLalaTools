@@ -17,13 +17,7 @@ export class WebdriverManager {
       ],
       exclude: [],
       maxInstances: 10,
-      capabilities: [{
-        maxInstances: 5,
-        browserName: 'chrome',
-        chromeOptions: {
-          args: ['--headless', '--disable-gpu', '--window-size=1980,1080']
-        },
-      }],
+      capabilities: webApplication.browserCapabilities,
       sync: true,
       logLevel: 'verbose',
       coloredLogs: true,
@@ -53,13 +47,7 @@ export class WebdriverManager {
       specs: ['./tests/random/' + randomTest._id + '/scripts/*.js'],
       exclude: [],
       maxInstances: 10,
-      capabilities: [{
-        maxInstances: 5,
-        browserName: 'chrome',
-        chromeOptions: {
-          args: ['--headless', '--disable-gpu', '--window-size=1980,1080']
-        },
-      }],
+      capabilities: webApplication.browserCapabilities,
       sync: true,
       logLevel: 'verbose',
       coloredLogs: true,
