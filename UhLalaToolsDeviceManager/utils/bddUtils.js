@@ -13,18 +13,18 @@ const runningTasks = {}
 
 const public = {}
 
-public.runBDD = async ({appId, repoUrl}, avds) => {
+public.runBDD = async ({appId, version, repoUrl}, avds) => {
 
     if (runningTasks[appId] !== undefined) return
     else runningTasks[appId] = true
 
-    const reportDir = reportUtils.createReportDir(appId, 'bdd')
+    const reportDir = reportUtils.createReportDir(appId, version, 'bdd')
     const results = [];
 
-    shell.cd(`${tests}/${appId}`);
+    shell.cd(`${tests}/${appId}/${version}`);
 
     //Get from function (opportunity to use git to gather sources and generating APK)
-    const apkPath = path.normalize(`${apks}/${appId}.apk`)
+    const apkPath = path.normalize(`${apks}/${appId}/${version}.apk`)
 
     await execPromise(`bundle install`)
 
@@ -45,7 +45,7 @@ public.runBDD = async ({appId, repoUrl}, avds) => {
         results.push(avd_results);
     });
 
-    shell.cd('../..');
+    shell.cd('../../..');
     reportUtils.writeReport(reportDir, results)
 
     delete runningTasks[appId]

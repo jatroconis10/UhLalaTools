@@ -26,8 +26,7 @@ public.runEmulator = (avd) => {
         result.error = "Can't launch more emulators"
     }
 
-    const i = getAvailableIndex();
-    console.log('index: ' + i)
+    const i = getAvailableIndex(avd);
     if(i === -1) {
         result.error = 'AVD already running'
     }
@@ -36,9 +35,10 @@ public.runEmulator = (avd) => {
         state.runningAvds[i] = avd
         const port = 5554 + i*2
         result.serial = `emulator-${port}`
-        shell.exec(`${emulator} -avd ${avd} -no-window`, {async: true})
+        shell.exec(`${emulator} -avd ${avd} -no-window`, (code, stdout, stderr) => {
+            state.runningAvds[i] = undefined;
+        })
     }
-    console.log(result);
     return result
 }
 
@@ -49,7 +49,7 @@ public.stopEmulator = (avd) => {
         serial: undefined
     }
 
-    const i = findAvdSerial(avd);
+    const i = findAvdIndex(avd);
     if (i === -1) {
         result.error = 'Avd not running'
     } else {
@@ -57,17 +57,19 @@ public.stopEmulator = (avd) => {
         const serial = `emulator-${port}`
         shell.exec(`${adb} -s ${serial} emu kill`);
         result.serial = serial;
+        state.runningAvds[i] = undefined
     }
     return result;
 }
 
-function findAvdSerial(avd) {
+function findAvdIndex(avd) {
     for (let i = 0; i < state.runningAvds.length; i++) {
         const avdAct = state.runningAvds[i];
         if(avdAct === avd) return i;
     }
     return -1;
 }
+
 function getAvailableIndex(newAvd) {
     let free = -1
     for (let i = 0; i < state.runningAvds.length && free === -1; i++) {

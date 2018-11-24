@@ -17,13 +17,13 @@ const public = {}
 
 public.getMutants = getMutants
 
-public.mutate = async (appId, package, repoUrl) => {
-    const mutantOutput = path.normalize(`${mutants}/${appId}/mainSources`);
+public.mutate = async (appId, version, package, repoUrl) => {
+    const mutantOutput = path.normalize(`${mutants}/${appId}/${version}/mainSources`);
 
     //If the repo url is given then clone it
-    if(repoUrl) await gitUtils.getSources(appId, repoUrl)
+    if(repoUrl) await gitUtils.getSources(appId, version, repoUrl)
 
-    const appMainSources = path.normalize(`${apps}/${appId}/app/src/main`)
+    const appMainSources = path.normalize(`${apps}/${appId}/${version}/app/src/main`)
     shell.mkdir('-p', mutantOutput);
     const mdroidRun = path.normalize(`java -jar ${mdroid}/MDroidPlus-1.0.0.jar ${mdroid}/libs4ast ${appMainSources} ${package} ${mutantOutput} ${mdroid} true`)
     
@@ -31,7 +31,7 @@ public.mutate = async (appId, package, repoUrl) => {
     return result;
 }
 
-public.runMutants = async (appId, avds) => {
+public.runMutants = async (appId, version, avds) => {
 
     if (runningTasks[appId] !== undefined) return
     else runningTasks[appId] = true
@@ -39,9 +39,9 @@ public.runMutants = async (appId, avds) => {
     shell.cd(process.cwd())
     const results = [];
 
-    const originalApp = path.normalize(`${apps}/${appId}/`)
+    const originalApp = path.normalize(`${apps}/${appId}/${version}/`)
 
-    const baseApp = path.normalize(`${mutants}/${appId}/base/`)
+    const baseApp = path.normalize(`${mutants}/${appId}/${version}/base/`)
     const baseMainSources = path.normalize(`${baseApp}/app/src/main/`)
 
     shell.mkdir('-p', baseApp);
@@ -54,9 +54,9 @@ public.runMutants = async (appId, avds) => {
         emulatorUtils.runEmulator(avd);
         await adbUtils.waitForEmulator()
 
-        const appMutants = getMutants(appId).filter(mutant => !mutant.includes('.log'))
+        const appMutants = getMutants(appId, version).filter(mutant => !mutant.includes('.log'))
         await asyncForEach(appMutants, async mutant => {
-            const mutantPath = path.normalize(`${mutants}/${appId}/mainSources/${mutant}/`)
+            const mutantPath = path.normalize(`${mutants}/${appId}/${version}/mainSources/${mutant}/`)
             shell.cp('-R', mutantPath + '*', baseMainSources)
             const mutantSurvived = await runMutant(baseApp)
             if (mutantSurvived) {
@@ -73,7 +73,7 @@ public.runMutants = async (appId, avds) => {
     });
     shell.rm('-rf', baseApp)
 
-    const reportPath = reportUtils.createReportDir(appId, 'mutants');
+    const reportPath = reportUtils.createReportDir(appId, version, 'mutants');
     reportUtils.writeReport(reportPath, results);
     
     delete runningTasks[appId]
@@ -99,8 +99,8 @@ function execPromise(command) {
     }) 
 }
 
-function getMutants(appId) {
-    return shell.ls(path.normalize(`${mutants}/${appId}/mainSources`))
+function getMutants(appId, version) {
+    return shell.ls(path.normalize(`${mutants}/${appId}/${version}/mainSources`))
 }
 
 async function asyncForEach(array, callback) {

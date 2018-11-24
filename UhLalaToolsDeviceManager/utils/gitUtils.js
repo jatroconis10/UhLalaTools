@@ -1,14 +1,16 @@
 const path = require('path');
-var NodeGit = require("nodegit");
+const shell = require('shelljs');
+const NodeGit = require("nodegit");
 
 const appsSources = path.normalize(`${process.cwd()}/appsSources`);
 
 const public = {};
 
-public.getSources = function(appId, repoUrl) {
+public.getSources = function(appId, version, repoUrl) {
 
     const cloneOptions = {};
-    const localPath = path.normalize(`${appsSources}/${appId}`)
+    const localPath = path.normalize(`${appsSources}/${appId}/${version}`)
+    shell.mkdir('-p', localPath);
 
     var cloneRepository = NodeGit.Clone(repoUrl, localPath, cloneOptions);
     return cloneRepository.catch(() => {

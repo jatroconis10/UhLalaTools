@@ -15,17 +15,17 @@ const tests = path.normalize(`${process.cwd()}/tests`);
 
 var router = express.Router();
 
-router.get('/:appId/reports', (req, res) => {
-    const appId = req.params.appId;
+router.get('/:appId/version/:version/reports', (req, res) => {
+    const { appId, version } = req.params;
 
-    let reports = reportutils.getAvailableReports(appId, 'bdd')
+    let reports = reportutils.getAvailableReports(appId, version, 'bdd')
     res.json(reports)
 })
 
-router.get('/:appId/reports/:timestampId', (req, res) => {
-    const { appId, timestampId } = req.params;
+router.get('/:appId/version/:version/reports/:timestampId', (req, res) => {
+    const { appId, timestampId, version } = req.params;
     
-    let report = reportutils.getReport(appId, 'bdd', timestampId)
+    let report = reportutils.getReport(appId, version, 'bdd', timestampId)
     if(!report.error) {
         res.json(report)
     } else {
@@ -33,11 +33,11 @@ router.get('/:appId/reports/:timestampId', (req, res) => {
     }
 })
 
-router.post('/:appId/run', async (req, res) => {
-    let { appId } = req.params;
+router.post('/:appId/version/:version/run', async (req, res) => {
+    let { appId, version } = req.params;
     const { avds } = req.body
     res.json({message:'Starting calabash'});
-    await bddUtils.runBDD( { appId } , avds)
+    await bddUtils.runBDD( { appId, version } , avds)
     console.log(`Finsished running bdd tests for app: ${appId}`)
 });
 
@@ -47,16 +47,16 @@ router.get('/:appId/run', (req, res) => {
     const isRunning = bddUtils.getRunningBdd(appId)
 
     res.json({isRunning: isRunning})
-})
+});
 
 var storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        const appTestPath = path.normalize(`${tests}/${req.params.appId}`)
+        const appTestPath = path.normalize(`${tests}/${req.params.appId}/${req.params.version}`)
         shell.mkdir('-p', appTestPath)
         cb(null, appTestPath);
     },
     filename: function (req, file, cb) {
-        cb(null, `${req.params.appId}.zip`);
+        cb(null, `${req.params.version}.zip`);
     }
 });
 
@@ -64,9 +64,9 @@ var upload = multer({
     storage: storage
 });
 
-router.post('/:appId', upload.single('test'), (req, res) => {
-    const appTestPath = path.normalize(`${tests}/${req.params.appId}`)
-    const testZip = path.normalize(`${appTestPath}/${req.params.appId}.zip`)
+router.post('/:appId/version/:version', upload.single('test'), (req, res) => {
+    const appTestPath = path.normalize(`${tests}/${req.params.appId}/${req.params.version}`)
+    const testZip = path.normalize(`${appTestPath}/${req.params.version}.zip`)
     fs.createReadStream(testZip).pipe(unzip.Extract({ path: appTestPath }));
     shell.rm(testZip);
     res.send('File uploaded');
