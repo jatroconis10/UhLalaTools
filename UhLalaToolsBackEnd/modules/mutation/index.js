@@ -117,4 +117,21 @@ router.post('/runTests/:testId', async function (req, res) {
     })
 });
 
+router.post('/runTestsMutode/:testId', async function (req, res) {
+    var testId = req.params.testId;
+    MutationTest.findById(testId, function (err, test) {
+        if (err || !test) {
+            res.status(404).json({
+                message: 'Can\'t run tests'
+            });
+        } else {
+            var rootDir = path.normalize(test.dir);
+            shell.exec('mutode', {cwd: rootDir});
+            res.json({
+                message: 'Scripts run'
+            });
+        }
+    })
+});
+
 module.exports = router;

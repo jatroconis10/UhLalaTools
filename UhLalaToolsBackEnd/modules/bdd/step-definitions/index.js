@@ -44,4 +44,32 @@ defineSupportCode(({
   Then('I expect to not be able to login', () => {
     browser.waitForVisible('.aviso.alert.alert-danger', 5000);
   });
+
+  Given(/^I go to (.*)$/ , (url) => {
+    browser.url(url);
+  });
+
+  When(/^I wait (.*) ms to see the element (.*)$/ , (ms, element) => {
+    browser.waitForVisible(element, ms);
+  });
+
+  Then(/^I wait (.*) ms to see the element (.*)$/ , (ms, element) => {
+    browser.waitForVisible(element, ms);
+  });
+
+  Then(/^I type (.*) in (.*)$/ , (text, element) => {
+    browser.element(text).keys(element);
+  });
+
+  Then(/^I click the element (.*)$/ , (element) => {
+    browser.click(element);
+  });
+
+  Then(/^I expect (.*) to exist$/ , (element) => {
+    expect($(element)).toBeDefined();
+  });
+
+  Then(/^I go to (.*)$/ , (url) => {
+    browser.url(url);
+  });
 });
