@@ -78,7 +78,7 @@ public.runMutants = async (appId, version, avds) => {
     
     delete runningTasks[appId]
 
-    return results;
+    return reportPath;
 }
 
 async function runMutant(mutantPath) {

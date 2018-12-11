@@ -31,17 +31,19 @@ public.runBDD = async ({appId, version, repoUrl}, avds) => {
     await asyncForEach(avds, async avd => {
         const avd_results = {};
 
-        emulatorUtils.runEmulator(avd);
+        const serial = emulatorUtils.runEmulator(avd).serial;
+        console.log(serial)
+        process.env.ADB_DEVICE_ARG = serial;
         await adbUtils.waitForEmulator()
 
         process.env.SCREENSHOT_PATH = path.join(reportDir, `screenshots/${avd}-`);
-        const result = await runDeviceBDD(apkPath)
+        const bddHtmlReport = path.join(reportDir, 'bdd-report.html')
+        const result = await runDeviceBDD(apkPath, serial, bddHtmlReport)
 
         emulatorUtils.stopEmulator()
 
         avd_results.name = avd;
-        avd_results.passed = result.code === 0;
-        avd_results.stdout = result.stdout;
+        avd_results.reportDir = bddHtmlReport
         results.push(avd_results);
     });
 
@@ -50,17 +52,17 @@ public.runBDD = async ({appId, version, repoUrl}, avds) => {
 
     delete runningTasks[appId]
 
-    return results;
+    return reportDir;
 }
 
 public.getRunningBdd = (appId) => {
     return runningTasks[appId] !== undefined
 }
 
-async function runDeviceBDD(apkPath) {
+async function runDeviceBDD(apkPath, deviceSerial, reportOutput) {
     apkPath = path.normalize(`${apkPath}`)
     await execPromise(`bundle exec calabash-android resign "${apkPath}"`);
-    const result = await execPromise(`bundle exec calabash-android run "${apkPath}"`);
+    const result = await execPromise(`bundle exec calabash-android run "${apkPath}" --format html --out ${reportOutput} ADB_DEVICE_ARG=${deviceSerial}`);
     return result;
 }
 

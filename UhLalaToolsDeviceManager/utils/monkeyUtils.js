@@ -59,7 +59,7 @@ public.runMonkey = async (appId, package, events, executions, avds, version) => 
     });
 
     reportUtils.writeReport(reportDir, results);
-    return results;
+    return reportDir;
 }
 
 function execPromise(command) {

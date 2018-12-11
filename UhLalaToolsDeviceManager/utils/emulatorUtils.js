@@ -39,6 +39,7 @@ public.runEmulator = (avd) => {
             state.runningAvds[i] = undefined;
         })
     }
+    console.log('Returning from run emulator')
     return result
 }
 
